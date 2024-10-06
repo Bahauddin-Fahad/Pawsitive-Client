@@ -1,7 +1,7 @@
-import SectionTitle from "../../../../components/ui/section/SectionTitle";
 import { FaPaw, FaHeartbeat, FaHandsHelping, FaLeaf } from "react-icons/fa";
 import { GiDogHouse } from "react-icons/gi";
 import { MdPets } from "react-icons/md";
+import SectionTitle from "../../_components/SectionTitle";
 
 const Missions = () => {
   return (

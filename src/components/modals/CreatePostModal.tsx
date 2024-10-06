@@ -9,22 +9,28 @@ import axios from "axios";
 import { useCreatePost } from "@/src/hooks/post.hook";
 import { Checkbox } from "@nextui-org/checkbox";
 import envConfig from "@/src/config/envConfig";
+import toast from "react-hot-toast";
+import { useUser } from "@/src/context/user.provider";
+import AuthenticationModal from "./AuthenticationModal";
+import { RxCross2 } from "react-icons/rx";
 
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
 export const postCategory = [
-  { key: "Tip", label: "Tip" },
+  { key: "Tips", label: "Tips" },
   { key: "Story", label: "Story" },
 ];
 
 export default function CreatePostModal() {
   const [openModal, setOpenModal] = useState(false);
+  const [openAuthModal, setOpenAuthModal] = useState(false);
   const [content, setContent] = useState("");
   const { register, handleSubmit, reset, formState, control, setValue } =
     useForm();
   const { errors } = formState;
   const [fileName, setFileName] = useState<string | null>(null);
   const [isSelected, setIsSelected] = useState(false);
+  const { user, isLoading } = useUser();
 
   const { mutate: handlePostCreation } = useCreatePost();
 
@@ -52,9 +58,12 @@ export default function CreatePostModal() {
   };
 
   const handleCreatePost = async (data: any) => {
-    if (!data.title || !data.category || !data.description || !data.image)
+    if (!data.title && !data.category && !data.description && !data.image) {
+      setOpenModal(false);
       return;
-    setOpenModal(false);
+    }
+
+    toast.loading("Creating Post...");
 
     const formData = new FormData();
     formData.append("file", data.image);
@@ -83,8 +92,13 @@ export default function CreatePostModal() {
         image: imageUrl,
         status: isSelected ? "PREMIUM" : "BASIC",
       };
+      console.log(postData);
+
+      toast.dismiss();
 
       handlePostCreation(postData);
+      toast.success("Post created successfully!");
+      setOpenModal(false);
     } catch (error: any) {
       console.error(error.message);
     }
@@ -92,11 +106,32 @@ export default function CreatePostModal() {
 
   return (
     <div className="mx-auto w-fit">
-      <textarea
-        placeholder="Tell us your story or share a tip! 🌍"
-        onClick={() => setOpenModal(true)}
-        className="rounded-md border border-zinc-500 px-3 py-2 text-zinc-500 hover:bg-zinc-200 focus:outline-none focus:ring-2 focus:ring-zinc-400 w-[350px] md:w-[600px] h-20 resize-none"
-      />
+      <div
+        className="flex items-center justify-center rounded-lg p-2 hover:shadow-md transition-shadow duration-200 cursor-pointer "
+        onClick={() => (user ? setOpenModal(true) : setOpenAuthModal(true))}
+      >
+        {user && (
+          <div className="flex items-start">
+            {isLoading ? (
+              <div className="animate-pulse w-10 h-10 rounded-full bg-custom mr-2" />
+            ) : (
+              <img
+                src={user?.profilePhoto}
+                alt="User Avatar"
+                className="size-14 rounded-full mr-2 object-cover"
+              />
+            )}
+          </div>
+        )}
+        <textarea
+          placeholder={`Want to Tell us your story or share a tip? ${user?.name}`}
+          className={`flex-grow border border-primary resize-none text-xl h-14 rounded-full pl-5 py-3 ${
+            user
+              ? "w-[330px] md:w-[580px] lg:w-[770px] xl:w-[930px]"
+              : "w-[355px] md:w-[640px] lg:w-[830px] xl:w-[990px]"
+          }`}
+        />
+      </div>
 
       <div
         onClick={() => setOpenModal(false)}
@@ -106,21 +141,17 @@ export default function CreatePostModal() {
       >
         <div
           onClick={(e_) => e_.stopPropagation()}
-          className={`absolute w-11/12 mx-auto md:max-w-3xl xl:max-w-4xl rounded-lg bg-white p-6 drop-shadow-lg overflow-y-auto h-fit max-h-[90vh] ${
+          className={`absolute w-11/12 mx-auto md:max-w-3xl rounded-lg bg-custom p-6 drop-shadow-lg overflow-y-auto h-fit max-h-[95vh] ${
             openModal
               ? "opacity-1 duration-300"
               : "scale-110 opacity-0 duration-150"
           }`}
         >
-          <svg
+          <RxCross2
             onClick={() => setOpenModal(false)}
-            className="absolute right-4 top-5 w-8 cursor-pointer fill-zinc-700"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path d="M6.99486 7.00636C6.60433 7.39689 6.60433 8.03005 6.99486 8.42058L10.58 12.0057L6.99486 15.5909C6.60433 15.9814 6.60433 16.6146 6.99486 17.0051C7.38538 17.3956 8.01855 17.3956 8.40907 17.0051L11.9942 13.4199L15.5794 17.0051C15.9699 17.3956 16.6031 17.3956 16.9936 17.0051C17.3841 16.6146 17.3841 15.9814 16.9936 15.5909L13.4084 12.0057L16.9936 8.42059C17.3841 8.03007 17.3841 7.3969 16.9936 7.00638C16.603 6.61585 15.9699 6.61585 15.5794 7.00638L11.9942 10.5915L8.40907 7.00636C8.01855 6.61584 7.38538 6.61584 6.99486 7.00636Z"></path>
-          </svg>
+            className="absolute right-4 top-5 w-8 cursor-pointer text-white"
+          />
+
           <h1 className="mb-2 text-3xl font-semibold">Create Travel Post</h1>
           <div>
             <div className="mt-7">
@@ -272,6 +303,13 @@ export default function CreatePostModal() {
           </div>
         </div>
       </div>
+
+      {openAuthModal && (
+        <AuthenticationModal
+          openAuthModal={openAuthModal}
+          setOpenAuthModal={setOpenAuthModal}
+        />
+      )}
     </div>
   );
 }

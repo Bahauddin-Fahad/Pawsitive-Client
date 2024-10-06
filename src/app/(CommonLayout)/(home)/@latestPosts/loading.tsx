@@ -1,5 +1,5 @@
-import LoadingCardWithoutComment from "@/src/components/ui/section/LoadingCardWithoutComment";
-import CreatePost from "../_homeSections/CreatePost/CreatePost";
+import LoadingCardWithoutComment from "../../_components/LoadingCardWithoutComment";
+import CreatePost from "../_components/CreatePost/CreatePost";
 
 const LatestPostLoading = () => {
   return (

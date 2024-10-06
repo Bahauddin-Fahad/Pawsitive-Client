@@ -49,7 +49,7 @@ module.exports = {
             },
 
             secondary: {
-              DEFAULT: "#8c8c91",
+              DEFAULT: "#71717a",
             },
           }, // light theme colors
         },
@@ -63,6 +63,7 @@ module.exports = {
             secondary: {
               DEFAULT: "#8c8c91",
             },
+            custom: "#121212",
           }, // dark theme colors
         },
         // ... custom themes

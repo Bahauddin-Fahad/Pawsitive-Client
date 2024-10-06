@@ -27,7 +27,7 @@ const NotFoundPage = () => {
             check to make sure you&apos;ve typed the URL correctly.
           </p>
           <Link href="/">
-            <Button color="primary">Button</Button>
+            <Button className="border-0 rounded-md">Home</Button>
           </Link>
         </div>
       </div>

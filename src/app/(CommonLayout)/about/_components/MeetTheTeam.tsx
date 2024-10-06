@@ -1,6 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import SectionTitle from "@/src/components/ui/section/SectionTitle";
+
 import React from "react";
+import SectionTitle from "../../_components/SectionTitle";
 
 const MeetTheTeam = () => {
   return (

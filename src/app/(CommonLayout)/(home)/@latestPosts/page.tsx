@@ -13,9 +13,9 @@ import {
 import { Key, useEffect, useState } from "react";
 import { BiFilterAlt } from "react-icons/bi";
 import { ImCross } from "react-icons/im";
-import CreatePost from "../_homeSections/CreatePost/CreatePost";
-import LoadingCardWithoutComment from "@/src/components/ui/section/LoadingCardWithoutComment";
-import TravelPostCardWithoutComment from "@/src/components/ui/section/TravelPostCardWithoutComment";
+import CreatePost from "../_components/CreatePost/CreatePost";
+import LoadingCardWithoutComment from "../../_components/LoadingCardWithoutComment";
+import TravelPostCardWithoutComment from "../../_components/TravelPostCardWithoutComment";
 
 const NewsFeed = () => {
   const [filterApplied, setFilterApplied] = useState(false);
@@ -64,7 +64,6 @@ const NewsFeed = () => {
   return (
     <div>
       <CreatePost />
-
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 my-5 p-4 border rounded-md shadow md:w-11/12 lg:w-10/12 xl:w-[75%] mx-auto">
         <input
           type="text"
@@ -73,7 +72,7 @@ const NewsFeed = () => {
           placeholder="Search"
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
-          className="w-full rounded-xl border-2 border-primary bg-white py-[6px] px-6 text-base font-medium  outline-none focus:border-primary focus:ring-1 focus:ring-primary-300"
+          className="w-full rounded-xl border-2 border-primary py-[6px] px-6 text-base font-medium  outline-none focus:border-primary focus:ring-1 focus:ring-primary-300"
         />
 
         {/* Category filter part */}
