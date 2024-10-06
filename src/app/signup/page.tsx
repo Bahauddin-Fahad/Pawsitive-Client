@@ -8,7 +8,7 @@ import {
 } from "react-hook-form";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useUser } from "@/src/context/user.provider";
-import { useUserRegistration } from "@/src/hooks/auth.hook";
+import { useUserSignup } from "@/src/hooks/auth.hook";
 import { useEffect, useState } from "react";
 import envConfig from "@/src/config/envConfig";
 import axios from "axios";
@@ -21,11 +21,7 @@ const SignupPage = () => {
   const redirect = searchParams.get("redirect");
   const router = useRouter();
   const { setIsLoading: userLoading } = useUser();
-  const {
-    mutate: handleUserRegister,
-    isLoading,
-    isSuccess,
-  } = useUserRegistration();
+  const { mutate: handleUserSignup, isLoading, isSuccess } = useUserSignup();
 
   const {
     register,
@@ -72,7 +68,7 @@ const SignupPage = () => {
         profilePhoto: imageUrl,
       };
 
-      handleUserRegister(userData);
+      handleUserSignup(userData);
       userLoading(true);
     } catch (error: any) {
       toast.error(error.message);

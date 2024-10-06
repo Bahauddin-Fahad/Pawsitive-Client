@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-const registerValidationSchema = z.object({
+const signupValidationSchema = z.object({
   name: z.string().min(1, "Please enter your name!"),
   email: z.string().email("Please enter a valid email address!"),
   password: z.string().min(1, "Please enter a password!"),
@@ -12,4 +12,4 @@ const registerValidationSchema = z.object({
     }, "Please upload a valid image file (JPG, PNG, etc.)"),
 });
 
-export default registerValidationSchema;
+export default signupValidationSchema;

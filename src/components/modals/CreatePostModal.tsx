@@ -12,13 +12,9 @@ import envConfig from "@/src/config/envConfig";
 
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
-export const travelCategory = [
-  { key: "Adventure", label: "Adventure" },
-  { key: "Business Travel", label: "Business Travel" },
-  { key: "Exploration", label: "Exploration" },
-  { key: "Family Travel", label: "Family Travel" },
-  { key: "Luxury Travel", label: "Luxury Travel" },
-  { key: "Budget Travel", label: "Budget Travel" },
+export const postCategory = [
+  { key: "Tip", label: "Tip" },
+  { key: "Story", label: "Story" },
 ];
 
 export default function CreatePostModal() {
@@ -159,7 +155,7 @@ export default function CreatePostModal() {
                   rules={{ required: "Please select a category" }}
                   render={({ field }) => (
                     <Select {...field} label="Select a category">
-                      {travelCategory.map((category) => (
+                      {postCategory.map((category) => (
                         <SelectItem key={category.key}>
                           {category.label}
                         </SelectItem>

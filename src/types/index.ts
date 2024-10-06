@@ -19,11 +19,10 @@ export interface IUser {
   name: string;
   role: keyof typeof USER_ROLE;
   email: string;
-  status: string;
+  planType: string;
   profilePhoto: string;
   followers: [];
   following: [];
-  isVerified: boolean;
   postCount: number;
   totalUpvote: number;
   createdAt?: string;
@@ -32,13 +31,7 @@ export interface IUser {
 
 export interface IPost {
   title: string;
-  category:
-    | "Adventure"
-    | "Business Travel"
-    | "Exploration"
-    | "Family Travel"
-    | "Luxury Travel"
-    | "Budget Travel";
+  category: "Tip" | "Story";
   description: string; // HTML template in string format
   image: string;
   postAuthor: string;
@@ -56,11 +49,11 @@ export interface ICreatePostData {
   status: string;
 }
 
-export interface IRegister {
+export interface ISignup {
   name: string;
   email: string;
   password: string;
-  profilePhoto: string;
+  profilePhoto?: string;
 }
 
 export interface IComment {

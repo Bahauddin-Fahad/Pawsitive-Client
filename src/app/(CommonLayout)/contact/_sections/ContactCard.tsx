@@ -7,7 +7,7 @@ const ContactCard = () => {
     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
       <div className="flex flex-col items-center justify-center border rounded-lg p-6 text-center shadow-lg">
         <div className="w-12 h-12 flex items-center justify-center rounded-full border-2 border-primary-500 mb-4">
-          <MdOutlineMail className="text-3xl text-backup" />
+          <MdOutlineMail className="text-3xl text-secondary" />
         </div>
 
         {/* Text */}
@@ -21,7 +21,7 @@ const ContactCard = () => {
 
       <div className="flex flex-col items-center justify-center border rounded-lg p-6 text-center shadow-lg">
         <div className="w-12 h-12 flex items-center justify-center rounded-full border-2 border-primary-500 mb-4">
-          <MdOutlinePhoneInTalk className="text-3xl text-backup" />
+          <MdOutlinePhoneInTalk className="text-3xl text-secondary" />
         </div>
 
         {/* Text */}
@@ -35,7 +35,7 @@ const ContactCard = () => {
 
       <div className="flex flex-col items-center justify-center border rounded-lg p-6 text-center shadow-lg">
         <div className="w-12 h-12 flex items-center justify-center rounded-full border-2 border-primary-500 mb-4">
-          <HiOutlineChatAlt2 className="text-3xl text-backup" />
+          <HiOutlineChatAlt2 className="text-3xl text-secondary" />
         </div>
 
         {/* Text */}
@@ -49,7 +49,7 @@ const ContactCard = () => {
 
       <div className="flex flex-col items-center justify-center border rounded-lg p-6 text-center shadow-lg">
         <div className="w-12 h-12 flex items-center justify-center rounded-full border-2 border-primary-500 mb-4">
-          <IoLocationOutline className="text-3xl text-backup" />
+          <IoLocationOutline className="text-3xl text-secondary" />
         </div>
 
         {/* Text */}

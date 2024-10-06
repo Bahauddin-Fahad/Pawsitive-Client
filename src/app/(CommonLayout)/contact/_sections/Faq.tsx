@@ -38,7 +38,7 @@ const Faq = () => {
   return (
     <div className="flex flex-col lg:flex-row gap-5 my-12 lg:my-16">
       <div className="flex-1 mx-3">
-        <h1 className="lg:text-xl text-primary border-l-[10px] border-backup pl-2 font-bold">
+        <h1 className="lg:text-xl text-primary border-l-[10px] border-secondary pl-2 font-bold">
           FAQ
         </h1>
         <h1 className="text-2xl md:text-4xl lg:text-3xl xl:text-4xl mt-8 font-bold text-center lg:text-left">
@@ -73,7 +73,7 @@ const Faq = () => {
 
                   {/* main accordion div  */}
                   <div className="text-center">
-                    <div className="relative max-w-[450px] border-t-[12px] border-backup bg-sky-50 p-3 shadow-md">
+                    <div className="relative max-w-[450px] border-t-[12px] border-secondary bg-sky-50 p-3 shadow-md">
                       <span className="absolute right-0 top-0 h-0 w-0 border-b-[40px] border-r-[40px] border-b-transparent border-r-backup"></span>
                       <h1 className="select-none text-lg text-zinc-700">
                         {data.title}
@@ -100,7 +100,7 @@ const Faq = () => {
         </div>
       </div>
       <div className="flex-1 mt-10 lg:mt-0">
-        <h1 className="lg:text-xl text-primary border-l-[10px] border-backup pl-2 font-bold">
+        <h1 className="lg:text-xl text-primary border-l-[10px] border-secondary pl-2 font-bold">
           GET IN TOUCH
         </h1>
 

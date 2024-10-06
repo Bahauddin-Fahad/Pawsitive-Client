@@ -33,9 +33,7 @@ export default function RootLayout({
     <html suppressHydrationWarning lang="en">
       <head />
       <body
-        className={clsx(
-          "min-h-screen bg-background antialiased xl:mx-auto mx-6"
-        )}
+        className={clsx("min-h-screen bg-background xl:mx-auto text-white")}
       >
         <Providers>{children}</Providers>
       </body>

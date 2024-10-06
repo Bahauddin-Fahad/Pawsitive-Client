@@ -51,8 +51,8 @@ export default function Navbar() {
         <Image
           src={logo}
           alt="logo"
-          height={120}
-          width={120}
+          height={100}
+          width={100}
           className="hidden lg:flex"
         />
       </NavbarBrand>
@@ -61,7 +61,7 @@ export default function Navbar() {
         <div className="hidden lg:flex gap-6">
           {siteConfig.navItems.map((item) => (
             <NavbarItem
-              className="text-lg"
+              className="text-lg text-white"
               key={item.label}
               isActive={pathname === item.href}
             >
@@ -89,7 +89,7 @@ export default function Navbar() {
             <NavbarUserDropdown user={user} />
           ) : (
             <Link href={"/login"}>
-              <Button color="primary">Button</Button>
+              <Button className="border-0 rounded-md">Login</Button>
             </Link>
           )}
         </NavbarItem>

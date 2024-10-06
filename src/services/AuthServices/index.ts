@@ -1,7 +1,7 @@
 "use server";
 import axiosInstance from "@/src/lib/AxiosInstance";
 import nexiosInstance from "@/src/lib/NexiosInstance";
-import { IRegister } from "@/src/types";
+import { ISignup } from "@/src/types";
 import { jwtDecode } from "jwt-decode";
 import { cookies } from "next/headers";
 import { FieldValues } from "react-hook-form";
@@ -21,9 +21,10 @@ export const loginUser = async (userData: FieldValues) => {
   }
 };
 
-export const registerUser = async (userData: IRegister) => {
+export const signupUser = async (userData: ISignup) => {
   try {
-    const response: any = await axiosInstance.post("/auth/register", userData);
+    const response: any = await axiosInstance.post("/auth/signup", userData);
+    console.log("r", response);
 
     if (response.data.success) {
       cookies().set("accessToken", response.data?.data?.accessToken);
@@ -54,13 +55,17 @@ export const getCurrentUser = async () => {
       name: decodedToken.name,
       email: decodedToken.email,
       role: decodedToken.role,
-      status: decodedToken.status,
+      planType: decodedToken.planType,
       profilePhoto: decodedToken.profilePhoto,
       followers: decodedToken.followers,
       following: decodedToken.following,
-      isVerified: decodedToken.isVerified,
       totalUpvote: decodedToken.totalUpvote,
       postCount: decodedToken.postCount,
+      paymentStatus: decodedToken.paymentStatus,
+      transactionId: decodedToken.transactionId,
+      premiumStart: decodedToken.premiumStart,
+      premiumEnd: decodedToken.premiumEnd,
+      premiumCharge: decodedToken.premiumCharge,
     };
   }
 
