@@ -103,10 +103,10 @@ const UpdatePostModal = ({
     const uploadPreset = envConfig.cloudinary_upload_preset as string;
     let imageURL = singlePost?.image;
     if (hasImage) {
-      const formdata = new FormData();
+      const formData = new FormData();
       if (postImgFile) {
-        formdata.append("file", postImgFile);
-        formdata.append("upload_preset", uploadPreset);
+        formData.append("file", postImgFile);
+        formData.append("upload_preset", uploadPreset);
       } else {
         console.error("Post image file is not set.");
       }
@@ -115,7 +115,7 @@ const UpdatePostModal = ({
         imageURL = await axios
           .post(
             `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
-            formdata,
+            formData,
             {
               headers: {
                 "Content-Type": "multipart/form-data",
@@ -142,7 +142,6 @@ const UpdatePostModal = ({
       };
 
       toast.dismiss();
-      console.log(postData);
 
       handlePostUpdate({ postData, id: singlePost?._id as string });
       setOpenEditModal(false);

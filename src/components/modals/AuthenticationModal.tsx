@@ -21,7 +21,7 @@ const AuthenticationModal = ({
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="absolute w-96 rounded-lg bg-zinc-500 p-6 text-center drop-shadow-2xl opacity-1 translate-y-0 duration-300"
+            className="absolute w-96 rounded-lg bg-custom p-6 text-center drop-shadow-2xl opacity-1 translate-y-0 duration-300"
           >
             <div className="flex flex-col items-center justify-center space-y-4">
               <MdOutlineReportGmailerrorred className="size-20" />

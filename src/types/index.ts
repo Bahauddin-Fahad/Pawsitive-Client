@@ -25,6 +25,11 @@ export interface IUser {
   following: [];
   postCount: number;
   totalUpvote: number;
+  paymentStatus?: string;
+  transactionId?: string;
+  premiumStart?: string;
+  premiumEnd?: string;
+  premiumCharge?: number;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -66,4 +71,10 @@ export interface IComment {
 
 export interface IUpdateComment {
   text: string;
+}
+
+export interface IUpdateUser {
+  name?: string;
+  email?: string;
+  profilePhoto?: string;
 }

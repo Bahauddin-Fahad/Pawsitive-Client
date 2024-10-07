@@ -19,11 +19,11 @@ export const DeletePostModal = ({
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="absolute w-80 rounded-lg bg-white p-6 text-center drop-shadow-2xl opacity-1 translate-y-0 duration-300"
+            className="absolute w-80 rounded-lg bg-custom p-6 text-center drop-shadow-2xl opacity-1 translate-y-0 duration-300"
           >
             <div className="flex flex-col items-center justify-center space-y-4">
               <svg
-                className="w-16 stroke-rose-600"
+                className="w-16 stroke-red-600"
                 viewBox="0 0 24 24"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"

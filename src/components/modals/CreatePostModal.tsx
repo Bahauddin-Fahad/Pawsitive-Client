@@ -132,6 +132,7 @@ export default function CreatePostModal() {
               ? "w-[330px] md:w-[580px] lg:w-[770px] xl:w-[930px]"
               : "w-[355px] md:w-[640px] lg:w-[830px] xl:w-[990px]"
           }`}
+          readOnly
         />
       </div>
 
