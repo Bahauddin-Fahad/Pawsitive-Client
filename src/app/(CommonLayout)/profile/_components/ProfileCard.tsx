@@ -29,26 +29,19 @@ export default function ProfileCard({ user }: { user: IUser }) {
           src={profilePhoto}
           alt="user"
         />
+        <span className="absolute -top-0 -right-10 text-md font-semibold bg-primary px-2 text-black rounded-full">
+          {planType}
+        </span>
       </div>
       <div className="w-full md:min-w-[350px] space-y-12 rounded-br-lg rounded-tr-lg bg-custom p-10 text-center shadow-md md:w-[400px]">
         <div className="space-y-1">
-          <h2 className="text-center flex justify-center items-center text-2xl font-medium text-white lg:text-3xl">
-            <span>{name}</span>
-            <span>
-              {planType === "PREMIUM" && (
-                <span>
-                  <LuBadgeCheck className="size-7 text-blue-700" />
-                </span>
-              )}
-            </span>
-          </h2>
-
-          <p className="text-secondary">{email}</p>
-          <div className="py-2">
-            <span className="rounded-full border-2 border-primary px-3 py-1 text-xs font-semibold text-primary">
-              {planType} PLAN
+          <div className="text-center flex justify-center items-start gap-1">
+            <span className="text-lg md:text-3xl font-medium text-white">
+              {name}
             </span>
           </div>
+          <p className="text-secondary">{email}</p>
+
           {planType != "PREMIUM" && totalUpvote > 0 && (
             <div
               onClick={() => {
@@ -56,7 +49,7 @@ export default function ProfileCard({ user }: { user: IUser }) {
               }}
               className="flex gap-1 justify-center items-center cursor-pointer"
             >
-              <span className="underline font-medium">GET VERIFIED</span>
+              <span className="underline font-medium">UPGRADE PLAN</span>
               <span>
                 <HiOutlineCheckBadge className="size-6 text-primary" />
               </span>

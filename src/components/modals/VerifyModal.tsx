@@ -5,6 +5,8 @@ import { useStartPremium } from "@/src/hooks/premium.hook";
 import { updateAccessTokenInCookies } from "@/src/utils/updateAccessTokenInCookies";
 import { format } from "date-fns";
 import toast from "react-hot-toast";
+import { HiOutlineBadgeCheck } from "react-icons/hi";
+import { LuCrown } from "react-icons/lu";
 
 const VerifyModal = ({ user, openModal, setOpenModal }: any) => {
   const { updateProfile } = useUser();
@@ -36,7 +38,7 @@ const VerifyModal = ({ user, openModal, setOpenModal }: any) => {
           new Date(new Date().setMonth(new Date().getMonth() + 1)),
           "dd-MM-yyyy"
         ), // one month later// one month later
-        premiumCharge: 19,
+        premiumCharge: 99,
       };
 
       toast.loading("Processing payment...");
@@ -60,30 +62,16 @@ const VerifyModal = ({ user, openModal, setOpenModal }: any) => {
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="absolute lg:w-[750px] mx-auto rounded-lg bg-white p-6 text-center drop-shadow-2xl opacity-1 translate-y-0 duration-300 overflow-y-auto h-fit max-h-screen md:overflow-auto"
+            className="absolute lg:w-[750px] mx-auto rounded-lg bg-custom p-6 text-center drop-shadow-2xl opacity-1 translate-y-0 duration-300 overflow-y-auto h-fit max-h-screen md:overflow-auto"
           >
             <div className="flex flex-col items-center justify-center space-y-4">
               {/* Content Part */}
               <div>
                 <h1 className="text-center text-3xl lg:text-4xl font-bold flex items-center gap-2 justify-center">
                   <span>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="28"
-                      height="28"
-                      viewBox="0 0 24 24"
-                      fill="#fcc200"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="lucide lucide-crown"
-                    >
-                      <path d="M11.562 3.266a.5.5 0 0 1 .876 0L15.39 8.87a1 1 0 0 0 1.516.294L21.183 5.5a.5.5 0 0 1 .798.519l-2.834 10.246a1 1 0 0 1-.956.734H5.81a1 1 0 0 1-.957-.734L2.02 6.02a.5.5 0 0 1 .798-.519l4.276 3.664a1 1 0 0 0 1.516-.294z" />
-                      <path d="M5 21h14" />
-                    </svg>
+                    <LuCrown className="size-7 text-primary" />
                   </span>
-                  <span> Premium Subscription Plan</span>
+                  <span>Premium Subscription Plan</span>
                 </h1>
                 <div className="mt-6 grid justify-center items-center gap-6 md:grid-cols-2">
                   <div className="group relative md:col-span-1">
@@ -92,16 +80,16 @@ const VerifyModal = ({ user, openModal, setOpenModal }: any) => {
                       className="absolute top-0 h-full w-full rounded-3xl border border-primary shadow-2xl shadow-gray-600/10 transition duration-500"
                     />
                     <div className="relative space-y-8 p-8">
-                      <h3 className="text-center text-3xl font-semibold text-gray-700">
+                      <h3 className="text-center text-3xl font-semibold text-secondary">
                         Monthly
                       </h3>
                       <div className="relative flex justify-around">
                         <div className="flex">
                           <span className="-ml-6 mt-2 text-3xl font-bold text-primary">
-                            $
+                            ৳
                           </span>
-                          <span className="leading-0 text-8xl font-bold text-gray-800 dark:text-white">
-                            19
+                          <span className="leading-0 text-8xl font-bold text-white ">
+                            99
                           </span>
                         </div>
                         <span className="absolute right-0 lg:right-1 bottom-2 text-xl font-bold text-primary">
@@ -110,66 +98,18 @@ const VerifyModal = ({ user, openModal, setOpenModal }: any) => {
                       </div>
                       <ul
                         role="list"
-                        className="m-auto w-max space-y-4 pb-6 text-gray-600 dark:text-gray-300"
+                        className="m-auto w-max space-y-4 pb-6 text-white"
                       >
                         <div className="space-x-2 flex items-center">
-                          <span>
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="24"
-                              height="24"
-                              viewBox="0 0 24 24"
-                              fill="#1773aa"
-                              stroke="white"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              className="lucide lucide-circle-check"
-                            >
-                              <circle cx="12" cy="12" r="10" />
-                              <path d="m9 12 2 2 4-4" />
-                            </svg>
-                          </span>
+                          <HiOutlineBadgeCheck className="size-6 text-primary" />
                           <span>Unlock Exclusive Content</span>
                         </div>
                         <li className="space-x-2 flex items-center">
-                          <span className="font-semibold text-primary">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="24"
-                              height="24"
-                              viewBox="0 0 24 24"
-                              fill="#1773aa"
-                              stroke="white"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              className="lucide lucide-circle-check"
-                            >
-                              <circle cx="12" cy="12" r="10" />
-                              <path d="m9 12 2 2 4-4" />
-                            </svg>
-                          </span>
+                          <HiOutlineBadgeCheck className="size-6 text-primary" />
                           <span>Profile Verification Badge</span>
                         </li>
                         <li className="space-x-2 flex items-center">
-                          <span>
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="24"
-                              height="24"
-                              viewBox="0 0 24 24"
-                              fill="#1773aa"
-                              stroke="white"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              className="lucide lucide-circle-check"
-                            >
-                              <circle cx="12" cy="12" r="10" />
-                              <path d="m9 12 2 2 4-4" />
-                            </svg>
-                          </span>
+                          <HiOutlineBadgeCheck className="size-6 text-primary" />
                           <span>Access Premium Travel Tips</span>
                         </li>
                       </ul>
@@ -182,81 +122,33 @@ const VerifyModal = ({ user, openModal, setOpenModal }: any) => {
                       className="absolute top-0 h-full w-full rounded-3xl border border-primary shadow-2xl shadow-gray-600/10 transition duration-500"
                     />
                     <div className="relative space-y-8 p-8">
-                      <h3 className="text-center text-3xl font-semibold text-gray-700 dark:text-white">
+                      <h3 className="text-center text-3xl font-semibold text-secondary dark:text-white">
                         Free
                       </h3>
                       <div className="relative flex justify-around">
                         <div className="flex">
                           <span className="-ml-2 mt-2 text-3xl font-bold text-primary">
-                            $
+                            ৳
                           </span>
-                          <span className="leading-0 text-8xl font-bold text-gray-800 dark:text-white">
+                          <span className="leading-0 text-8xl font-bold text-white dark:text-white">
                             0
                           </span>
                         </div>
                       </div>
                       <ul
                         role="list"
-                        className="m-auto w-max space-y-4 pb-6 text-gray-600 dark:text-gray-300"
+                        className="m-auto w-max space-y-4 pb-6 text-white"
                       >
                         <div className="space-x-2 flex items-center">
-                          <span>
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="24"
-                              height="24"
-                              viewBox="0 0 24 24"
-                              fill="#1773aa"
-                              stroke="white"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              className="lucide lucide-circle-check"
-                            >
-                              <circle cx="12" cy="12" r="10" />
-                              <path d="m9 12 2 2 4-4" />
-                            </svg>
-                          </span>
+                          <HiOutlineBadgeCheck className="size-6 text-primary" />
                           <span>Create & Share Posts</span>
                         </div>
                         <li className="space-x-2 flex items-center">
-                          <span className="font-semibold text-primary">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="24"
-                              height="24"
-                              viewBox="0 0 24 24"
-                              fill="#1773aa"
-                              stroke="white"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              className="lucide lucide-circle-check"
-                            >
-                              <circle cx="12" cy="12" r="10" />
-                              <path d="m9 12 2 2 4-4" />
-                            </svg>
-                          </span>
+                          <HiOutlineBadgeCheck className="size-6 text-primary" />
                           <span>Follow Travelers</span>
                         </li>
                         <li className="space-x-2 flex items-center">
-                          <span>
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="24"
-                              height="24"
-                              viewBox="0 0 24 24"
-                              fill="#1773aa"
-                              stroke="white"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              className="lucide lucide-circle-check"
-                            >
-                              <circle cx="12" cy="12" r="10" />
-                              <path d="m9 12 2 2 4-4" />
-                            </svg>
-                          </span>
+                          <HiOutlineBadgeCheck className="size-6 text-primary" />
                           <span>Comment on Stories</span>
                         </li>
                       </ul>
@@ -265,23 +157,21 @@ const VerifyModal = ({ user, openModal, setOpenModal }: any) => {
                 </div>
               </div>
 
-              {/* Content Ends */}
-
               {/* Button */}
               <div className="flex gap-2 w-80">
                 <button
                   onClick={handlePayment}
                   className="relative flex h-11 w-full items-center justify-center px-6 before:absolute before:inset-0 before:rounded-full before:bg-primary before:transition before:duration-300 hover:before:scale-105 active:duration-75 active:before:scale-95"
                 >
-                  <span className="relative text-base font-semibold text-white dark:text-dark">
+                  <span className="relative text-base font-semibold text-black">
                     Start Premium
                   </span>
                 </button>
                 <button
                   onClick={() => setOpenModal(false)}
-                  className="relative flex h-11 w-full items-center justify-center px-6 before:absolute before:inset-0 before:rounded-full before:bg-sky-50 before:border before:border-sky-500 dark:before:border-gray-600 dark:before:bg-gray-700 before:transition before:duration-300 hover:before:scale-105 active:duration-75 active:before:scale-95"
+                  className="relative flex h-11 w-full items-center justify-center px-6 before:absolute before:inset-0 before:rounded-full before:bg-custom before:border before:border-secondary  before:transition before:duration-300 hover:before:scale-105 active:duration-75 active:before:scale-95"
                 >
-                  <span className="relative text-base font-semibold text-sky-600 dark:text-white">
+                  <span className="relative text-base font-semibold text-secondary">
                     Cancel
                   </span>
                 </button>
