@@ -1,3 +1,4 @@
+/* eslint-disable react/self-closing-comp */
 "use client";
 
 import { ReactNode, useEffect, useState } from "react";
@@ -7,7 +8,7 @@ import { Input } from "@nextui-org/input";
 import { Checkbox } from "@nextui-org/checkbox";
 import "react-quill/dist/quill.snow.css";
 import { useUser } from "@/src/context/user.provider";
-import { RxCrossCircled } from "react-icons/rx";
+import { RxCross2, RxCrossCircled } from "react-icons/rx";
 import { MdOutlineAddPhotoAlternate } from "react-icons/md";
 import toast from "react-hot-toast";
 import { IPost } from "@/src/types";
@@ -42,7 +43,9 @@ const UpdatePostModal = ({
     singlePost?.planType === "PREMIUM" ? true : false
   );
   const [postImgFile, setPostImgFile] = useState<File | null>(null);
-  const [postImgTempURL, setPostImgTempURL] = useState<string | null>(null);
+  const [postImgTempURL, setPostImgTempURL] = useState<string | null>(
+    singlePost?.image || null
+  );
   const { user } = useUser();
   const [isOpen, setIsOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string>(
@@ -139,6 +142,7 @@ const UpdatePostModal = ({
       };
 
       toast.dismiss();
+      console.log(postData);
 
       handlePostUpdate({ postData, id: singlePost?._id as string });
       setOpenEditModal(false);
@@ -157,21 +161,17 @@ const UpdatePostModal = ({
     >
       <div
         onClick={(e_) => e_.stopPropagation()}
-        className={`absolute w-11/12 mx-auto md:max-w-3xl rounded-lg bg-white p-6 drop-shadow-lg overflow-y-auto h-fit max-h-[90vh] ${
+        className={`absolute w-11/12 mx-auto md:max-w-3xl rounded-lg bg-custom p-6 drop-shadow-lg overflow-y-auto h-auto max-h-[100vh] ${
           openEditModal
             ? "opacity-1 duration-300"
             : "scale-110 opacity-0 duration-150"
         }`}
       >
-        <svg
+        <RxCross2
           onClick={() => setOpenEditModal(false)}
-          className="absolute right-4 top-5 w-8 cursor-pointer fill-zinc-700"
-          viewBox="0 0 24 24"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path d="M6.99486 7.00636C6.60433 7.39689 6.60433 8.03005 6.99486 8.42058L10.58 12.0057L6.99486 15.5909C6.60433 15.9814 6.60433 16.6146 6.99486 17.0051C7.38538 17.3956 8.01855 17.3956 8.40907 17.0051L11.9942 13.4199L15.5794 17.0051C15.9699 17.3956 16.6031 17.3956 16.9936 17.0051C17.3841 16.6146 17.3841 15.9814 16.9936 15.5909L13.4084 12.0057L16.9936 8.42059C17.3841 8.03007 17.3841 7.3969 16.9936 7.00638C16.603 6.61585 15.9699 6.61585 15.5794 7.00638L11.9942 10.5915L8.40907 7.00636C8.01855 6.61584 7.38538 6.61584 6.99486 7.00636Z"></path>
-        </svg>
+          className="absolute right-4 top-5 w-8 cursor-pointer text-white"
+        />
+
         <h1 className="mb-2 text-3xl font-semibold">Update Pet Post</h1>
         <div>
           <form onSubmit={handleSubmit(handleUpdatePost)} className="space-y-3">
@@ -200,15 +200,13 @@ const UpdatePostModal = ({
             </div>
 
             <div>
-              <label className="font-semibold">Select a Category</label>
+              <label className="font-semibold mb-2">Select a Category</label>
               <div className="relative w-full">
-                {" "}
-                {/* Changed to relative positioning */}
                 <div
                   onClick={() => setIsOpen(!isOpen)}
-                  className="flex w-full items-center justify-between rounded-xl bg-white px-6 py-2 border cursor-pointer"
+                  className="flex w-full items-center justify-between rounded-xl px-6 py-2 border cursor-pointer"
                 >
-                  <h1 className="font-medium text-gray-600">
+                  <h1 className="font-medium text-secondary">
                     {selectedCategory}
                   </h1>
                   <svg
@@ -244,7 +242,7 @@ const UpdatePostModal = ({
                         setIsOpen(false);
                         setValue("category", cat.key);
                       }}
-                      className="px-6 py-2 text-gray-500 hover:bg-gray-100 cursor-pointer"
+                      className="px-6 py-2 text-secondary hover:bg-gray-100 cursor-pointer"
                     >
                       {cat.label}
                     </div>
@@ -272,7 +270,6 @@ const UpdatePostModal = ({
                         field.onChange(value);
                       }}
                       modules={modules}
-                      className="h-[110px]"
                     />
                   </div>
                 )}

@@ -10,12 +10,12 @@ import {
 
 export const useCreateComment = () => {
   return useMutation<IComment, Error, IComment>({
-    mutationKey: ["CREATE_POST"],
+    mutationKey: ["CREATE_COMMENT"],
     mutationFn: async (commentData) => {
       return toast.promise(createComment(commentData), {
         loading: "Loading...",
         success: "You added a new comment!",
-        error: "Please login first!",
+        error: "Something is Wrong!",
       });
     },
   });

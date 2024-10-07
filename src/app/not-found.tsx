@@ -7,7 +7,7 @@ const NotFoundPage = () => {
     <div className="relative h-screen">
       <Image
         src={
-          "https://images.pexels.com/photos/2132180/pexels-photo-2132180.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+          "https://images.pexels.com/photos/18692688/pexels-photo-18692688/free-photo-of-brown-dog-in-a-garden.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
         }
         alt="background"
         fill

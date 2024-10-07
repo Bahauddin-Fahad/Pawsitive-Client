@@ -32,33 +32,7 @@ const SignupPage = () => {
   });
 
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
-    let imageUrl =
-      "https://www.pngall.com/wp-content/uploads/5/Profile-PNG-Free-Download.png";
-
-    if (data?.image) {
-      const formData = new FormData();
-      formData.append("file", data.image);
-      formData.append(
-        "upload_preset",
-        envConfig.cloudinary_upload_preset as string
-      );
-
-      try {
-        const response = await axios.post(
-          envConfig.cloudinary_url as string,
-          formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
-
-        imageUrl = response.data.secure_url;
-      } catch (error: any) {
-        console.error(error.message);
-      }
-    }
+    let imageUrl = "https://i.ibb.co/pvmWXsv/male-placeholder-image.jpg";
 
     try {
       const userData = {

@@ -1,9 +1,9 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 "use client";
 
-import { IComment, IPost } from "@/src/types";
+import { IComment } from "@/src/types";
 import { Input } from "@nextui-org/input";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import parse from "html-react-parser";
 import { useUser } from "@/src/context/user.provider";
 import {
@@ -12,7 +12,6 @@ import {
   useGetPostAllComments,
   useUpdateComment,
 } from "@/src/hooks/comment.hook";
-import { Tooltip } from "@nextui-org/tooltip";
 
 import { useFollowUser, useUnfollowUser } from "@/src/hooks/user.hook";
 import {
@@ -21,7 +20,6 @@ import {
   useDeletePost,
   useRemoveDownvotePost,
   useRemoveUpvotePost,
-  useUpdatePost,
 } from "@/src/hooks/post.hook";
 import Link from "next/link";
 import {
@@ -34,6 +32,17 @@ import { useRouter } from "next/navigation";
 import UpdatePostModal from "@/src/components/modals/UpdatePostModal";
 import { DeletePostModal } from "@/src/components/modals/DeletePostModal";
 import { DeleteCommentModal } from "@/src/components/modals/DeleteCommentModal";
+import { RiEyeFill, RiUserAddLine, RiUserUnfollowLine } from "react-icons/ri";
+import { LuPencil } from "react-icons/lu";
+import { FaRegTrashAlt } from "react-icons/fa";
+import {
+  MdOutlineThumbDown,
+  MdOutlineThumbUp,
+  MdThumbDown,
+  MdThumbUp,
+  MdOutlineMessage,
+} from "react-icons/md";
+import { IoSend } from "react-icons/io5";
 
 interface ITravelPostCardProps {
   singlePost: any;
@@ -47,6 +56,7 @@ const PostCard = ({ singlePost, refetch }: ITravelPostCardProps) => {
     description,
     image,
     postAuthor,
+    planType,
     upvote,
     downvote,
     createdAt,
@@ -183,18 +193,18 @@ const PostCard = ({ singlePost, refetch }: ITravelPostCardProps) => {
 
   return (
     <div className="my-5">
-      <article className="relative mb-4 break-inside p-4 md:p-6 rounded-xl bg-white flex flex-col bg-clip-border md:w-11/12 lg:w-10/12 xl:w-[75%] mx-auto border border-primary">
+      <article className="relative mb-4 break-inside p-4 md:p-6 rounded-xl bg-custom flex flex-col bg-clip-border md:w-11/12 lg:w-10/12 xl:w-[75%] mx-auto border border-secondary">
         {postAuthor._id === user?._id && (
           <div className="mb-5 cursor-pointer w-20">
             <Dropdown closeOnSelect={true}>
               <DropdownTrigger className="absolute top-3 right-8">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
+                  width="30"
+                  height="30"
                   viewBox="0 0 24 24"
                   fill="none"
-                  stroke="#1773aa"
+                  stroke="#8c8c91"
                   strokeWidth="2"
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -204,32 +214,17 @@ const PostCard = ({ singlePost, refetch }: ITravelPostCardProps) => {
                   <circle cx="19" cy="12" r="1" />
                   <circle cx="5" cy="12" r="1" />
                 </svg>
+                {/* <HiDotsHorizontal /> */}
               </DropdownTrigger>
               <DropdownMenu aria-label="Static Actions">
                 <DropdownItem
                   key="view"
-                  onClick={() =>
-                    handleNavigation(`/postDetails?${params.toString()}`)
-                  }
+                  // onClick={() =>
+                  //   handleNavigation(`/postDetails?${params.toString()}`)
+                  // }
                 >
                   <span className="flex gap-2 items-center text-primary">
-                    <span>
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="#1773aa"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        className="lucide lucide-eye"
-                      >
-                        <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" />
-                        <circle cx="12" cy="12" r="3" />
-                      </svg>
-                    </span>
+                    <RiEyeFill />
                     <span>View Post</span>
                   </span>
                 </DropdownItem>
@@ -242,58 +237,19 @@ const PostCard = ({ singlePost, refetch }: ITravelPostCardProps) => {
                     }}
                     className="flex gap-2 items-center text-primary"
                   >
-                    <span>
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="#1773aa"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        className="lucide lucide-pencil"
-                      >
-                        <path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z" />
-                        <path d="m15 5 4 4" />
-                      </svg>
-                    </span>
+                    <LuPencil />
                     <span>Edit Post</span>
                   </span>
                 </DropdownItem>
-                <DropdownItem
-                  key="delete"
-                  className="text-danger"
-                  color="danger"
-                >
+                <DropdownItem key="delete">
                   <span
                     onClick={(e) => {
                       e.preventDefault();
                       setOpenDeleteModal(true);
                     }}
-                    className="flex gap-2 items-center"
+                    className="flex gap-2 items-center text-error"
                   >
-                    <span>
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="20"
-                        height="20"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        className="lucide lucide-trash-2"
-                      >
-                        <path d="M3 6h18" />
-                        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
-                        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
-                        <line x1="10" x2="10" y1="11" y2="17" />
-                        <line x1="14" x2="14" y1="11" y2="17" />
-                      </svg>
-                    </span>
+                    <FaRegTrashAlt />
                     <span>Delete Post</span>
                   </span>
                 </DropdownItem>
@@ -319,7 +275,7 @@ const PostCard = ({ singlePost, refetch }: ITravelPostCardProps) => {
                   </a>
                 </div>
               </Link>
-              <div className="text-slate-500">
+              <div className="text-secondary">
                 {new Date(createdAt).toLocaleDateString("en-US", {
                   year: "numeric",
                   month: "long",
@@ -334,26 +290,10 @@ const PostCard = ({ singlePost, refetch }: ITravelPostCardProps) => {
                     onClick={() =>
                       handleRemoveFollow(postAuthor?._id, postAuthor?.name)
                     }
-                    className="rounded-full bg-primary px-3 py-1 text-white text-sm flex gap-2 items-center cursor-pointer hover:bg-primary-700"
+                    className="rounded-full bg-secondary px-3 py-1 text-black text-sm font-semibold flex gap-2 items-center cursor-pointer hover:bg-secondary"
                   >
                     <span>
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="20"
-                        height="20"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        className="lucide lucide-user-x"
-                      >
-                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-                        <circle cx="9" cy="7" r="4" />
-                        <line x1="17" x2="22" y1="8" y2="13" />
-                        <line x1="22" x2="17" y1="8" y2="13" />
-                      </svg>
+                      <RiUserUnfollowLine />
                     </span>
                     <span className="md:block">Unfollow</span>
                   </span>
@@ -362,26 +302,10 @@ const PostCard = ({ singlePost, refetch }: ITravelPostCardProps) => {
                     onClick={() =>
                       handleAddFollow(postAuthor?._id, postAuthor?.name)
                     }
-                    className="rounded-full bg-primary px-3 py-1 text-white text-sm flex gap-2 items-center cursor-pointer hover:bg-primary-700"
+                    className="rounded-full bg-primary px-3 py-1 text-black text-sm font-semibold flex gap-2 items-center cursor-pointer hover:bg-secondary"
                   >
                     <span>
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="20"
-                        height="20"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        className="lucide lucide-user-plus"
-                      >
-                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-                        <circle cx="9" cy="7" r="4" />
-                        <line x1="19" x2="19" y1="8" y2="14" />
-                        <line x1="22" x2="16" y1="11" y2="11" />
-                      </svg>
+                      <RiUserAddLine />
                     </span>
                     <span className="md:block">Follow</span>
                   </span>
@@ -390,9 +314,9 @@ const PostCard = ({ singlePost, refetch }: ITravelPostCardProps) => {
             )}
           </div>
           <div className="mt-2 mb-6 md:mb-0 md:mt-0">
-            <div className="inline-flex rounded-full border border-primary px-3 py-2 text-primary font-semibold md:hidden mb-2 gap-1 w-auto">
+            <div className="rounded-full border border-primary px-3 py-2 text-white font-semibold hidden md:inline-flex justify-center mb-2 gap-1 min-w-16">
               <div className="flex items-center">
-                {status === "PREMIUM" && (
+                {planType === "PREMIUM" && (
                   <span>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -411,7 +335,7 @@ const PostCard = ({ singlePost, refetch }: ITravelPostCardProps) => {
                     </svg>
                   </span>
                 )}
-                <span>{category}</span>
+                <span className="text-center">{category}</span>
               </div>
             </div>
           </div>
@@ -419,13 +343,13 @@ const PostCard = ({ singlePost, refetch }: ITravelPostCardProps) => {
 
         {/* category part for small device */}
         <div className="mt-2 mb-6 md:mb-0 md:mt-0">
-          <span className="rounded-full border border-primary px-3 py-2  text-primary font-semibold md:hidden mb-2">
+          <span className="rounded-full border border-primary px-3 py-2 text-primary font-semibold md:hidden mb-2">
             {category}
           </span>
         </div>
 
         {/* title part */}
-        <h2 className="text-3xl font-extrabold">{title}</h2>
+        <h2 className="text-xl md:text-3xl font-extrabold">{title}</h2>
 
         {/* image part */}
         <div className="py-4">
@@ -449,128 +373,48 @@ const PostCard = ({ singlePost, refetch }: ITravelPostCardProps) => {
         <div className="py-4 flex gap-5">
           <div className="inline-flex items-center">
             {upvote?.includes(user?._id) ? (
-              <div
-                onClick={() =>
-                  postAuthor?._id !== user?._id &&
-                  handleRemoveUpvote(_id as string)
-                }
-                className="mr-2 cursor-pointer"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="lucide lucide-thumbs-up text-primary"
-                >
-                  <path d="M7 10v12" />
-                  <path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z" />
-                </svg>
-              </div>
-            ) : (
-              <div
-                onClick={() =>
-                  postAuthor?._id !== user?._id &&
-                  handleAddUpvote(_id as string)
-                }
-                className="mr-2 cursor-pointer"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="lucide lucide-thumbs-up text-primary"
-                >
-                  <path d="M7 10v12" />
-                  <path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z" />
-                </svg>
-              </div>
-            )}
-
-            <span className="text-lg font-bold">{upvote?.length || 0}</span>
-          </div>
-          <a className="inline-flex items-center">
-            {downvote?.includes(user?._id) ? (
               <span
-                onClick={() =>
-                  postAuthor?._id !== user?._id && handleRemoveDownvote(_id)
-                }
+                onClick={() => handleRemoveUpvote(_id as string)}
                 className="mr-2 cursor-pointer"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="lucide lucide-thumbs-down text-primary"
-                >
-                  <path d="M17 14V2" />
-                  <path d="M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L12 22a3.13 3.13 0 0 1-3-3.88Z" />
-                </svg>
+                <MdThumbUp className="size-6 text-primary" />
               </span>
             ) : (
               <span
-                onClick={() =>
-                  postAuthor?._id !== user?._id && handleAddDownvote(_id)
-                }
+                onClick={() => handleAddUpvote(_id as string)}
                 className="mr-2 cursor-pointer"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="lucide lucide-thumbs-down text-primary"
-                >
-                  <path d="M17 14V2" />
-                  <path d="M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L12 22a3.13 3.13 0 0 1-3-3.88Z" />
-                </svg>
+                <MdOutlineThumbUp className="size-6 text-primary" />
+              </span>
+            )}
+            <span className="text-lg font-bold">{upvote?.length || 0}</span>
+          </div>
+          <div className="inline-flex items-center">
+            {downvote?.includes(user?._id) ? (
+              <span
+                onClick={() => handleRemoveDownvote(_id)}
+                className="mr-2 cursor-pointer"
+              >
+                <MdThumbDown className="size-6 text-primary" />
+              </span>
+            ) : (
+              <span
+                onClick={() => handleAddDownvote(_id)}
+                className="mr-2 cursor-pointer"
+              >
+                <MdOutlineThumbDown className="size-6 text-primary" />
               </span>
             )}
             <span className="text-lg font-bold">{downvote?.length || 0}</span>
-          </a>
-          <a className="inline-flex items-center">
+          </div>
+          <div className="inline-flex items-center">
             <span className="mr-2">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="lucide lucide-message-circle text-primary"
-              >
-                <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z" />
-              </svg>
+              <MdOutlineMessage className="size-6 text-primary" />
             </span>
             <span className="text-lg font-bold">
               {allComments?.data?.result?.length || 0}
             </span>
-          </a>
+          </div>
         </div>
 
         {/* Write comment part */}
@@ -584,25 +428,13 @@ const PostCard = ({ singlePost, refetch }: ITravelPostCardProps) => {
             value={comment}
             onChange={handleInputChange}
             endContent={
-              <svg
-                className="fill-blue-500 size-8 cursor-pointer"
+              <IoSend
                 onClick={handleCommentSubmit}
-                viewBox="0 0 24 24"
-                style={{ width: 24, height: 24 }}
-              >
-                <path d="M2,21L23,12L2,3V10L17,12L2,14V21Z" />
-              </svg>
+                className="text-primary size-6 cursor-pointer"
+              />
             }
           />
         </div>
-
-        {commentIdToDelete && (
-          <DeleteCommentModal
-            handleDeleteComment={handleDeleteComment}
-            openModal={openModal}
-            setOpenModal={setOpenModal}
-          />
-        )}
 
         {/* Comment Section */}
         <div>
@@ -619,14 +451,14 @@ const PostCard = ({ singlePost, refetch }: ITravelPostCardProps) => {
                           alt={comment.user?.name}
                         />
                       </a>
-                      <div className="flex justify-between items-center gap-7 w-full">
+                      <div className="flex flex-col w-full">
                         <div className="w-full">
                           {/* increase the width of this div */}
                           <div className="w-full">
                             <a className="inline-block font-bold mr-2">
                               {comment.user?.name}
                             </a>
-                            <span className="text-xs md:text-sm text-slate-500">
+                            <span className="text-xs md:text-sm text-secondary">
                               {new Date(comment.createdAt).toLocaleString(
                                 "en-US",
                                 {
@@ -660,22 +492,18 @@ const PostCard = ({ singlePost, refetch }: ITravelPostCardProps) => {
                                       handleEditCommentChange(comment._id, e)
                                     }
                                     endContent={
-                                      <svg
-                                        className="fill-blue-500 size-8 cursor-pointer"
+                                      <IoSend
                                         onClick={() =>
                                           handleUpdateComment(comment._id)
                                         }
-                                        viewBox="0 0 24 24"
-                                        style={{ width: 24, height: 24 }}
-                                      >
-                                        <path d="M2,21L23,12L2,3V10L17,12L2,14V21Z" />
-                                      </svg>
+                                        className="text-primary size-6 cursor-pointer"
+                                      />
                                     }
                                   />
                                 </div>
                                 <button
                                   onClick={handleCancel}
-                                  className="rounded-md border border-rose-600 py-[3px] px-2 text-rose-600 duration-150 hover:bg-rose-600 hover:text-white"
+                                  className="rounded-md border border-red-600 py-[3px] px-2 text-red-600 duration-150 hover:bg-red-600 hover:text-white"
                                 >
                                   Cancel
                                 </button>
@@ -687,130 +515,36 @@ const PostCard = ({ singlePost, refetch }: ITravelPostCardProps) => {
                         </div>
                         <div>
                           {comment?.user?._id === user?._id && (
-                            <div className="hidden md:flex gap-3 mr-2">
-                              <Tooltip showArrow={true} content="Edit Comment">
-                                <div
-                                  onClick={() =>
-                                    handleEdit(comment._id, comment.text)
-                                  }
-                                  className="bg-blue-500 p-1 rounded-full w-8 h-8 flex items-center justify-center"
-                                >
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    width="16"
-                                    height="16"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="white"
-                                    strokeWidth="2"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    className="lucide lucide-pencil"
+                            <>
+                              {!isEditing && (
+                                <div className="hidden md:flex gap-3 mr-2">
+                                  <p
+                                    onClick={() =>
+                                      handleEdit(comment._id, comment.text)
+                                    }
+                                    className="text-sm text-secondary hover:underline cursor-pointer"
                                   >
-                                    <path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z" />
-                                    <path d="m15 5 4 4" />
-                                  </svg>
-                                </div>
-                              </Tooltip>
-
-                              <Tooltip
-                                showArrow={true}
-                                content="Delete Comment"
-                              >
-                                <div
-                                  onClick={() => {
-                                    setCommentIdToDelete(comment._id);
-                                    setOpenModal(true);
-                                  }}
-                                  className="bg-blue-500 p-1 rounded-full w-8 h-8 flex items-center justify-center cursor-pointer"
-                                >
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    width="16"
-                                    height="16"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="white"
-                                    strokeWidth="2"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    className="lucide lucide-trash-2"
+                                    Edit
+                                  </p>
+                                  <p
+                                    onClick={() => {
+                                      setCommentIdToDelete(comment._id);
+                                      setOpenModal(true);
+                                    }}
+                                    className="text-sm text-secondary hover:underline cursor-pointer"
                                   >
-                                    <path d="M3 6h18" />
-                                    <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
-                                    <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
-                                    <line x1="10" x2="10" y1="11" y2="17" />
-                                    <line x1="14" x2="14" y1="11" y2="17" />
-                                  </svg>
+                                    Delete
+                                  </p>
                                 </div>
-                              </Tooltip>
-                            </div>
+                              )}
+                            </>
                           )}
                         </div>
                       </div>
                     </div>
-
-                    <div className="flex md:hidden gap-3 mt-4 ml-16">
-                      <Tooltip showArrow={true} content="Edit Comment">
-                        <div
-                          onClick={() => handleEdit(comment._id, comment.text)}
-                          className="bg-blue-500 p-1 rounded-full w-8 h-8 flex items-center justify-center"
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="16"
-                            height="16"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="white"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            className="lucide lucide-pencil"
-                          >
-                            <path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z" />
-                            <path d="m15 5 4 4" />
-                          </svg>
-                        </div>
-                      </Tooltip>
-
-                      <Tooltip showArrow={true} content="Delete Comment">
-                        <div
-                          onClick={() => {
-                            setCommentIdToDelete(comment._id);
-                            setOpenModal(true);
-                          }}
-                          className="bg-blue-500 p-1 rounded-full w-8 h-8 flex items-center justify-center cursor-pointer"
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="16"
-                            height="16"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="white"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            className="lucide lucide-trash-2"
-                          >
-                            <path d="M3 6h18" />
-                            <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
-                            <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
-                            <line x1="10" x2="10" y1="11" y2="17" />
-                            <line x1="14" x2="14" y1="11" y2="17" />
-                          </svg>
-                        </div>
-                      </Tooltip>
-                    </div>
                   </div>
                 );
               })}
-              {/* <div className="w-full">
-                <a className="py-3 px-4 w-full block bg-slate-100 dark:bg-slate-700 text-center rounded-lg font-medium hover:bg-slate-200 dark:hover:bg-slate-600 transition ease-in-out delay-75">
-                  Show more comments
-                </a>
-              </div> */}
             </div>
           )}
         </div>
@@ -821,6 +555,7 @@ const PostCard = ({ singlePost, refetch }: ITravelPostCardProps) => {
           singlePost={singlePost}
           openEditModal={openEditModal}
           setOpenEditModal={setOpenEditModal}
+          refetch={refetch}
         />
       )}
 
@@ -829,6 +564,13 @@ const PostCard = ({ singlePost, refetch }: ITravelPostCardProps) => {
           handleDeletePost={handleDeletePost}
           openDeleteModal={openDeleteModal}
           setOpenDeleteModal={setOpenDeleteModal}
+        />
+      )}
+      {commentIdToDelete && (
+        <DeleteCommentModal
+          handleDeleteComment={handleDeleteComment}
+          openModal={openModal}
+          setOpenModal={setOpenModal}
         />
       )}
     </div>

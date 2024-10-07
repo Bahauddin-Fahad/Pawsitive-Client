@@ -8,7 +8,7 @@ export default function CommonLayout({
   return (
     <div>
       <Navbar />
-      {children}
+      <div className="pb-10 px-5">{children}</div>
     </div>
   );
 }

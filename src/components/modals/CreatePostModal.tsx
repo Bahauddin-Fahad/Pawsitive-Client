@@ -156,17 +156,20 @@ export default function CreatePostModal() {
 
           <h1 className="mb-2 text-3xl font-semibold">Create Pet Post</h1>
           <div>
-            {user?.planType === "PREMIUM" && (
-              <div className="mt-7">
-                <Checkbox isSelected={isSelected} onValueChange={setIsSelected}>
-                  Mark as Premium
-                </Checkbox>
-              </div>
-            )}
             <form
               onSubmit={handleSubmit(handleCreatePost)}
               className="space-y-3"
             >
+              {user?.planType === "PREMIUM" && (
+                <div className="mt-7">
+                  <Checkbox
+                    isSelected={isSelected}
+                    onValueChange={setIsSelected}
+                  >
+                    Mark as Premium
+                  </Checkbox>
+                </div>
+              )}
               <div>
                 <Controller
                   name="title"
