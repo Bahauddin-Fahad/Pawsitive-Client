@@ -1,7 +1,7 @@
 const Headers = () => {
   return (
     <div className="mx-auto mb-5">
-      <div className="border-t-4 w-[80px] border-primary" />
+      <div className="border-t-4 w-[80px] border-secondary" />
       <h1 className="uppercase my-5 xl:text-[20px] tracking-[10px]">
         We are Pawsitive
       </h1>

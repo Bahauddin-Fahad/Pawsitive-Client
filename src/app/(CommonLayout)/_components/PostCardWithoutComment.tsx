@@ -1,12 +1,11 @@
 "use client";
 
-import { useState } from "react";
 import parse from "html-react-parser";
 import { useUser } from "@/src/context/user.provider";
 import { useFollowUser, useUnfollowUser } from "@/src/hooks/user.hook";
 import Link from "next/link";
 
-const TravelPostCardWithoutComment = ({ singlePost }: any) => {
+const PostCardWithoutComment = ({ singlePost }: any) => {
   const { title, category, description, image, postAuthor, createdAt, _id } =
     singlePost;
 
@@ -31,13 +30,14 @@ const TravelPostCardWithoutComment = ({ singlePost }: any) => {
         href={`/postDetails?${params.toString()}`}
         className="cursor-pointer"
       >
-        <div className="mb-4 break-inside p-4 md:p-6 rounded-xl bg-white flex flex-col bg-clip-border md:w-11/12 lg:w-10/12 xl:w-[75%] mx-auto border border-primary">
+        <div className="mb-4 break-inside p-4 md:p-6 rounded-xl bg-secondary flex flex-col bg-clip-border md:w-11/12 lg:w-10/12 xl:w-[75%] mx-auto border border-secondary">
           <div className="flex pb-6 items-center justify-between">
             <div className="flex">
               <div className="inline-block mr-4">
                 <img
                   className="rounded-full max-w-none w-12 h-12 object-cover"
                   src={postAuthor?.profilePhoto}
+                  alt=""
                 />
               </div>
               <div className="flex flex-col">
@@ -119,7 +119,7 @@ const TravelPostCardWithoutComment = ({ singlePost }: any) => {
               )}
             </div>
             <div>
-              <span className="rounded-full border border-primary px-3 py-2  text-primary font-semibold hidden md:block mb-2">
+              <span className="rounded-full border border-secondary px-3 py-2  text-primary font-semibold hidden md:block mb-2">
                 {category}
               </span>
             </div>
@@ -127,7 +127,7 @@ const TravelPostCardWithoutComment = ({ singlePost }: any) => {
 
           {/* category part for small device */}
           <div className="mt-2 mb-6 md:mb-0 md:mt-0">
-            <span className="rounded-full border border-primary px-3 py-2  text-primary font-semibold md:hidden mb-2">
+            <span className="rounded-full border border-secondary px-3 py-2  text-primary font-semibold md:hidden mb-2">
               {category}
             </span>
           </div>
@@ -158,4 +158,4 @@ const TravelPostCardWithoutComment = ({ singlePost }: any) => {
   );
 };
 
-export default TravelPostCardWithoutComment;
+export default PostCardWithoutComment;

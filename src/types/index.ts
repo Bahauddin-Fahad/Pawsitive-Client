@@ -1,6 +1,6 @@
 import { SVGProps } from "react";
 
-export const POST_STATUS = {
+export const POST_TYPE = {
   BASIC: "BASIC",
   PREMIUM: "PREMIUM",
 } as const;
@@ -30,6 +30,7 @@ export interface IUser {
 }
 
 export interface IPost {
+  _id?: string;
   title: string;
   category: "Tip" | "Story";
   description: string; // HTML template in string format
@@ -37,7 +38,7 @@ export interface IPost {
   postAuthor: string;
   upvote: number;
   downvote: number;
-  status: keyof typeof POST_STATUS;
+  planType: keyof typeof POST_TYPE;
   createdAt?: Date;
 }
 
@@ -46,7 +47,7 @@ export interface ICreatePostData {
   category: string;
   description: string;
   image: string;
-  status: string;
+  planType: string;
 }
 
 export interface ISignup {

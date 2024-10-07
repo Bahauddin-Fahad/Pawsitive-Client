@@ -1,8 +1,9 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 "use client";
 
 import { IComment, IPost } from "@/src/types";
 import { Input } from "@nextui-org/input";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import parse from "html-react-parser";
 import { useUser } from "@/src/context/user.provider";
 import {
@@ -12,18 +13,34 @@ import {
   useUpdateComment,
 } from "@/src/hooks/comment.hook";
 import { Tooltip } from "@nextui-org/tooltip";
-import { DeleteModal } from "../../modal/DeleteModal";
+
 import { useFollowUser, useUnfollowUser } from "@/src/hooks/user.hook";
 import {
   useAddDownvotePost,
   useAddUpvotePost,
+  useDeletePost,
   useRemoveDownvotePost,
   useRemoveUpvotePost,
+  useUpdatePost,
 } from "@/src/hooks/post.hook";
 import Link from "next/link";
-import { Skeleton } from "@nextui-org/skeleton";
+import {
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
+} from "@nextui-org/dropdown";
+import { useRouter } from "next/navigation";
+import UpdatePostModal from "@/src/components/modals/UpdatePostModal";
+import { DeletePostModal } from "@/src/components/modals/DeletePostModal";
+import { DeleteCommentModal } from "@/src/components/modals/DeleteCommentModal";
 
-const TravelPostCard = ({ singlePost }: any) => {
+interface ITravelPostCardProps {
+  singlePost: any;
+  refetch?: () => void;
+}
+
+const PostCard = ({ singlePost, refetch }: ITravelPostCardProps) => {
   const {
     title,
     category,
@@ -32,13 +49,12 @@ const TravelPostCard = ({ singlePost }: any) => {
     postAuthor,
     upvote,
     downvote,
-    status,
     createdAt,
     _id,
   } = singlePost;
 
-  const [comment, setComment] = useState<string>("");
   const { user } = useUser();
+  const [comment, setComment] = useState<string>("");
   const { mutate: handleCreateComment } = useCreateComment();
   const { mutate: handleCommentUpdate } = useUpdateComment();
   const { mutate: handleCommentDelete } = useDeleteComment();
@@ -48,8 +64,9 @@ const TravelPostCard = ({ singlePost }: any) => {
   const { mutate: handleRemoveUpvotePost } = useRemoveUpvotePost();
   const { mutate: handleAddDownvotePost } = useAddDownvotePost();
   const { mutate: handleRemoveDownvotePost } = useRemoveDownvotePost();
-  const { data: allComments, isLoading: commentLoading } =
-    useGetPostAllComments(_id);
+
+  const { mutate: handlePostDelete } = useDeletePost();
+  const { data: allComments } = useGetPostAllComments(_id);
 
   const [isEditing, setIsEditing] = useState<string | null>("");
   const [editedComments, setEditedComments] = useState<{
@@ -59,6 +76,12 @@ const TravelPostCard = ({ singlePost }: any) => {
     null
   );
   const [openModal, setOpenModal] = useState(false);
+  const [openEditModal, setOpenEditModal] = useState(false);
+  const [openDeleteModal, setOpenDeleteModal] = useState(false);
+
+  const router = useRouter();
+  const params = new URLSearchParams();
+  params.set("id", _id);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setComment(e.target.value);
@@ -102,6 +125,10 @@ const TravelPostCard = ({ singlePost }: any) => {
     } catch (error: any) {
       console.log(error.message);
     }
+  };
+
+  const handleNavigation = (pathname: string) => {
+    router.push(pathname);
   };
 
   const handleUpdateComment = (commentId: string) => {
@@ -149,15 +176,139 @@ const TravelPostCard = ({ singlePost }: any) => {
     handleRemoveDownvotePost({ id });
   };
 
+  const handleDeletePost = async () => {
+    handlePostDelete({ id: _id });
+    refetch?.();
+  };
+
   return (
     <div className="my-5">
-      <article className="mb-4 break-inside p-4 md:p-6 rounded-xl bg-white flex flex-col bg-clip-border md:w-11/12 lg:w-10/12 xl:w-[75%] mx-auto border border-primary">
+      <article className="relative mb-4 break-inside p-4 md:p-6 rounded-xl bg-white flex flex-col bg-clip-border md:w-11/12 lg:w-10/12 xl:w-[75%] mx-auto border border-primary">
+        {postAuthor._id === user?._id && (
+          <div className="mb-5 cursor-pointer w-20">
+            <Dropdown closeOnSelect={true}>
+              <DropdownTrigger className="absolute top-3 right-8">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#1773aa"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="lucide lucide-ellipsis"
+                >
+                  <circle cx="12" cy="12" r="1" />
+                  <circle cx="19" cy="12" r="1" />
+                  <circle cx="5" cy="12" r="1" />
+                </svg>
+              </DropdownTrigger>
+              <DropdownMenu aria-label="Static Actions">
+                <DropdownItem
+                  key="view"
+                  onClick={() =>
+                    handleNavigation(`/postDetails?${params.toString()}`)
+                  }
+                >
+                  <span className="flex gap-2 items-center text-primary">
+                    <span>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="#1773aa"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="lucide lucide-eye"
+                      >
+                        <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" />
+                        <circle cx="12" cy="12" r="3" />
+                      </svg>
+                    </span>
+                    <span>View Post</span>
+                  </span>
+                </DropdownItem>
+                <DropdownItem key="edit">
+                  {" "}
+                  <span
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setOpenEditModal(true);
+                    }}
+                    className="flex gap-2 items-center text-primary"
+                  >
+                    <span>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="#1773aa"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="lucide lucide-pencil"
+                      >
+                        <path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z" />
+                        <path d="m15 5 4 4" />
+                      </svg>
+                    </span>
+                    <span>Edit Post</span>
+                  </span>
+                </DropdownItem>
+                <DropdownItem
+                  key="delete"
+                  className="text-danger"
+                  color="danger"
+                >
+                  <span
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setOpenDeleteModal(true);
+                    }}
+                    className="flex gap-2 items-center"
+                  >
+                    <span>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="lucide lucide-trash-2"
+                      >
+                        <path d="M3 6h18" />
+                        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                        <line x1="10" x2="10" y1="11" y2="17" />
+                        <line x1="14" x2="14" y1="11" y2="17" />
+                      </svg>
+                    </span>
+                    <span>Delete Post</span>
+                  </span>
+                </DropdownItem>
+              </DropdownMenu>
+            </Dropdown>
+          </div>
+        )}
+
         <div className="flex pb-6 items-center justify-between">
           <div className="flex">
             <a className="inline-block mr-4">
               <img
                 className="rounded-full max-w-none w-12 h-12 object-cover"
                 src={postAuthor?.profilePhoto}
+                alt=""
               />
             </a>
             <div className="flex flex-col">
@@ -238,10 +389,31 @@ const TravelPostCard = ({ singlePost }: any) => {
               </div>
             )}
           </div>
-          <div>
-            <span className="rounded-full border border-primary px-3 py-2  text-primary font-semibold hidden md:block mb-2">
-              {category}
-            </span>
+          <div className="mt-2 mb-6 md:mb-0 md:mt-0">
+            <div className="inline-flex rounded-full border border-primary px-3 py-2 text-primary font-semibold md:hidden mb-2 gap-1 w-auto">
+              <div className="flex items-center">
+                {status === "PREMIUM" && (
+                  <span>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="#fcc200"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="lucide lucide-crown"
+                    >
+                      <path d="M11.562 3.266a.5.5 0 0 1 .876 0L15.39 8.87a1 1 0 0 0 1.516.294L21.183 5.5a.5.5 0 0 1 .798.519l-2.834 10.246a1 1 0 0 1-.956.734H5.81a1 1 0 0 1-.957-.734L2.02 6.02a.5.5 0 0 1 .798-.519l4.276 3.664a1 1 0 0 0 1.516-.294z" />
+                      <path d="M5 21h14" />
+                    </svg>
+                  </span>
+                )}
+                <span>{category}</span>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -418,14 +590,14 @@ const TravelPostCard = ({ singlePost }: any) => {
                 viewBox="0 0 24 24"
                 style={{ width: 24, height: 24 }}
               >
-                <path d="M2,21L23,12L2,3V10L17,12L2,14V21Z"></path>
+                <path d="M2,21L23,12L2,3V10L17,12L2,14V21Z" />
               </svg>
             }
           />
         </div>
 
         {commentIdToDelete && (
-          <DeleteModal
+          <DeleteCommentModal
             handleDeleteComment={handleDeleteComment}
             openModal={openModal}
             setOpenModal={setOpenModal}
@@ -434,7 +606,7 @@ const TravelPostCard = ({ singlePost }: any) => {
 
         {/* Comment Section */}
         <div>
-          {allComments?.data?.result?.length > 0 ? (
+          {allComments?.data?.result?.length > 0 && (
             <div className="pt-6">
               {allComments.data.result.map((comment: any) => {
                 return (
@@ -496,7 +668,7 @@ const TravelPostCard = ({ singlePost }: any) => {
                                         viewBox="0 0 24 24"
                                         style={{ width: 24, height: 24 }}
                                       >
-                                        <path d="M2,21L23,12L2,3V10L17,12L2,14V21Z"></path>
+                                        <path d="M2,21L23,12L2,3V10L17,12L2,14V21Z" />
                                       </svg>
                                     }
                                   />
@@ -640,21 +812,27 @@ const TravelPostCard = ({ singlePost }: any) => {
                 </a>
               </div> */}
             </div>
-          ) : (
-            <div className="max-w-[300px] w-full flex items-center gap-3">
-              <div>
-                <Skeleton className="flex rounded-full w-12 h-12" />
-              </div>
-              <div className="w-full flex flex-col gap-2">
-                <Skeleton className="h-3 w-3/5 rounded-lg" />
-                <Skeleton className="h-3 w-4/5 rounded-lg" />
-              </div>
-            </div>
           )}
         </div>
       </article>
+
+      {openEditModal && (
+        <UpdatePostModal
+          singlePost={singlePost}
+          openEditModal={openEditModal}
+          setOpenEditModal={setOpenEditModal}
+        />
+      )}
+
+      {openDeleteModal && (
+        <DeletePostModal
+          handleDeletePost={handleDeletePost}
+          openDeleteModal={openDeleteModal}
+          setOpenDeleteModal={setOpenDeleteModal}
+        />
+      )}
     </div>
   );
 };
 
-export default TravelPostCard;
+export default PostCard;

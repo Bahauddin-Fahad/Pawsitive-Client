@@ -1,5 +1,5 @@
 "use client";
-import { ReactNode, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import dynamic from "next/dynamic";
 import "react-quill/dist/quill.snow.css";
@@ -12,12 +12,13 @@ import envConfig from "@/src/config/envConfig";
 import toast from "react-hot-toast";
 import { useUser } from "@/src/context/user.provider";
 import AuthenticationModal from "./AuthenticationModal";
-import { RxCross2 } from "react-icons/rx";
+import { RxCross2, RxCrossCircled } from "react-icons/rx";
+import { MdOutlineAddPhotoAlternate } from "react-icons/md";
 
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
 export const postCategory = [
-  { key: "Tips", label: "Tips" },
+  { key: "Tip", label: "Tip" },
   { key: "Story", label: "Story" },
 ];
 
@@ -25,13 +26,13 @@ export default function CreatePostModal() {
   const [openModal, setOpenModal] = useState(false);
   const [openAuthModal, setOpenAuthModal] = useState(false);
   const [content, setContent] = useState("");
-  const { register, handleSubmit, reset, formState, control, setValue } =
-    useForm();
+  const { handleSubmit, reset, formState, control } = useForm();
   const { errors } = formState;
-  const [fileName, setFileName] = useState<string | null>(null);
+
   const [isSelected, setIsSelected] = useState(false);
   const { user, isLoading } = useUser();
-
+  const [postImgFile, setPostImgFile] = useState<File | null>(null);
+  const [postImgTempURL, setPostImgTempURL] = useState<string | null>(null);
   const { mutate: handlePostCreation } = useCreatePost();
 
   const modules = {
@@ -45,52 +46,52 @@ export default function CreatePostModal() {
       ],
     },
   };
-
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    setValue("image", file); // Set the file value in the form state
-    setFileName(file ? file.name : null);
-  };
-
-  const clearFileSelection = () => {
-    setFileName("");
-    setValue("image", null);
-  };
+  useEffect(() => {
+    if (!postImgFile) return;
+    const imgTempURL = URL.createObjectURL(postImgFile);
+    setPostImgTempURL(imgTempURL);
+    return () => {
+      return URL.revokeObjectURL(imgTempURL);
+    };
+  }, [postImgFile]);
 
   const handleCreatePost = async (data: any) => {
     if (!data.title && !data.category && !data.description && !data.image) {
       setOpenModal(false);
       return;
     }
+    const cloudName = envConfig.cloudinary_name as string;
+    const uploadPreset = envConfig.cloudinary_upload_preset as string;
 
     toast.loading("Creating Post...");
 
-    const formData = new FormData();
-    formData.append("file", data.image);
-    formData.append(
-      "upload_preset",
-      envConfig.cloudinary_upload_preset as string
-    );
-
     try {
-      const response = await axios.post(
-        envConfig.cloudinary_url as string,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      const formdata = new FormData();
+      if (postImgFile) {
+        formdata.append("file", postImgFile);
+        formdata.append("upload_preset", uploadPreset);
+      } else {
+        console.error("Profile image file is not set.");
+      }
 
-      const imageUrl = response.data.secure_url;
+      const imageURL = await axios
+        .post(
+          `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+          formdata,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        )
+        .then((data) => data.data.secure_url);
 
       const postData = {
         title: data.title,
         category: data.category,
         description: data.description,
-        image: imageUrl,
-        status: isSelected ? "PREMIUM" : "BASIC",
+        image: imageURL,
+        planType: isSelected ? "PREMIUM" : "BASIC",
       };
       console.log(postData);
 
@@ -99,6 +100,7 @@ export default function CreatePostModal() {
       handlePostCreation(postData);
       toast.success("Post created successfully!");
       setOpenModal(false);
+      reset();
     } catch (error: any) {
       console.error(error.message);
     }
@@ -124,8 +126,8 @@ export default function CreatePostModal() {
           </div>
         )}
         <textarea
-          placeholder={`Want to Tell us your story or share a tip? ${user?.name}`}
-          className={`flex-grow border border-primary resize-none text-xl h-14 rounded-full pl-5 py-3 ${
+          placeholder={`Want to Tell us your story or share a tip? ${user ? user?.name : ""}`}
+          className={`flex-grow border border-secondary resize-none text-sm md:text-xl h-14 rounded-full pl-2 md:pl-5 py-4 md:py-3 ${
             user
               ? "w-[330px] md:w-[580px] lg:w-[770px] xl:w-[930px]"
               : "w-[355px] md:w-[640px] lg:w-[830px] xl:w-[990px]"
@@ -141,7 +143,7 @@ export default function CreatePostModal() {
       >
         <div
           onClick={(e_) => e_.stopPropagation()}
-          className={`absolute w-11/12 mx-auto md:max-w-3xl rounded-lg bg-custom p-6 drop-shadow-lg overflow-y-auto h-fit max-h-[95vh] ${
+          className={`absolute w-11/12 mx-auto md:max-w-3xl rounded-lg bg-custom p-6 drop-shadow-lg overflow-y-auto h-auto max-h-[100vh] ${
             openModal
               ? "opacity-1 duration-300"
               : "scale-110 opacity-0 duration-150"
@@ -152,13 +154,15 @@ export default function CreatePostModal() {
             className="absolute right-4 top-5 w-8 cursor-pointer text-white"
           />
 
-          <h1 className="mb-2 text-3xl font-semibold">Create Travel Post</h1>
+          <h1 className="mb-2 text-3xl font-semibold">Create Pet Post</h1>
           <div>
-            <div className="mt-7">
-              <Checkbox isSelected={isSelected} onValueChange={setIsSelected}>
-                Mark as Premium
-              </Checkbox>
-            </div>
+            {user?.planType === "PREMIUM" && (
+              <div className="mt-7">
+                <Checkbox isSelected={isSelected} onValueChange={setIsSelected}>
+                  Mark as Premium
+                </Checkbox>
+              </div>
+            )}
             <form
               onSubmit={handleSubmit(handleCreatePost)}
               className="space-y-3"
@@ -200,7 +204,6 @@ export default function CreatePostModal() {
                   </p>
                 )}
               </div>
-
               <div>
                 <Controller
                   name="description"
@@ -217,7 +220,7 @@ export default function CreatePostModal() {
                           field.onChange(value);
                         }}
                         modules={modules}
-                        className="h-[110px]"
+                        // className="h-[110px]"
                       />
                     </div>
                   )}
@@ -228,48 +231,33 @@ export default function CreatePostModal() {
                   </p>
                 )}
               </div>
-
-              <div className="flex flex-col">
-                <div className="mt-9">
-                  <label
-                    className="flex h-14 w-full cursor-pointer items-center justify-center rounded-xl border-2 border-gray-300 text-default-800 shadow-sm transition-all duration-100 hover:border-primary-600"
-                    htmlFor={"image"}
-                  >
-                    {"Upload Post Image"}
-                  </label>
-                </div>
-                <input
-                  accept="image/*"
-                  className="hidden"
-                  id={"image"}
-                  type="file"
-                  {...register("image")}
-                  onChange={handleFileChange}
-                />
-
-                {fileName && (
-                  <div className="mt-2 flex items-center text-sm text-gray-600 justify-between">
-                    <span
-                      className="font-medium mr-2 truncate w-60"
-                      style={{
-                        overflow: "hidden",
-                        whiteSpace: "nowrap",
-                        textOverflow: "ellipsis",
-                      }}
-                    >
-                      Selected file: {fileName}
-                    </span>
-                    <button
-                      type="button"
-                      className="text-red-500 hover:text-red-700 font-medium"
-                      onClick={clearFileSelection}
-                    >
-                      Clear
-                    </button>
+              <div className="mt-9">
+                {postImgTempURL ? (
+                  <div className="relative w-fit">
+                    <img
+                      src={postImgTempURL}
+                      alt=" "
+                      className="w-[100px] h-[75px] rounded-[10px] object-cover"
+                    />
+                    <RxCrossCircled
+                      onClick={() => setPostImgTempURL(null)}
+                      className="absolute -top-2 -right-2 cursor-pointer text-red-600 font-bold w-6 h-6"
+                    />
                   </div>
+                ) : (
+                  <label className="cursor-pointer bg-secondary w-[100px] h-[75px] rounded-[10px] flex flex-col justify-center items-center gap-1">
+                    <MdOutlineAddPhotoAlternate className="text-black h-7 w-7" />
+                    <p className="text-xs text-black">Add Photo</p>
+                    <input
+                      type="file"
+                      style={{ display: "none" }}
+                      onChange={(e) => {
+                        setPostImgFile(e.target.files?.[0] as File);
+                      }}
+                    />
+                  </label>
                 )}
-
-                {!fileName && errors.image && (
+                {!postImgFile && errors.image && (
                   <p className="mt-1 text-sm text-red-600 text-center">
                     {errors.image.message as ReactNode}
                   </p>
@@ -293,7 +281,7 @@ export default function CreatePostModal() {
                       reset();
                       setOpenModal(false);
                     }}
-                    className="rounded-md border border-rose-600 w-full py-[6px] text-rose-600 duration-150 hover:bg-rose-600 hover:text-white"
+                    className="rounded-md border border-red-600 w-full py-[6px] text-red-600 duration-150 hover:bg-red-600 hover:text-white"
                   >
                     Cancel
                   </button>

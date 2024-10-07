@@ -1,7 +1,7 @@
 const LoadingCard = () => {
   return (
     <div>
-      <article className="mb-4 break-inside p-4 md:p-6 rounded-xl bg-white flex flex-col bg-clip-border md:w-11/12 lg:w-10/12 xl:w-[75%] mx-auto border border-primary animate-pulse">
+      <article className="mb-4 break-inside p-4 md:p-6 rounded-xl bg-white flex flex-col bg-clip-border md:w-11/12 lg:w-10/12 xl:w-[75%] mx-auto border border-secondary animate-pulse">
         <div className="flex pb-6 items-center justify-between">
           <div className="flex">
             <div className="mr-4">

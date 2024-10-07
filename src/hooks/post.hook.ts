@@ -3,23 +3,23 @@ import {
   addDownvote,
   addUpvote,
   createPost,
+  deletePost,
+  getAllPostsDashboard,
   getAllPostsNewsFeed,
   getSinglePost,
   removeDownvote,
   removeUpvote,
+  updatePost,
 } from "../services/PostServices";
 import toast from "react-hot-toast";
-import { ICreatePostData } from "../types";
+import { ICreatePostData, IPost } from "../types";
 
 export const useCreatePost = () => {
   return useMutation<ICreatePostData, Error, ICreatePostData>({
     mutationKey: ["CREATE_POST"],
-    mutationFn: async (postData) => {
-      return toast.promise(createPost(postData), {
-        loading: "Loading...",
-        success: "Post created successfully!",
-        error: "Error when creating post.",
-      });
+    mutationFn: async (postData) => await createPost(postData),
+    onError: (error) => {
+      toast.error(`Error: ${error.message}`);
     },
   });
 };
@@ -29,6 +29,15 @@ export const useGetAllPosts = (apiUrl: string) => {
     queryKey: [apiUrl],
     queryFn: async () => await getAllPostsNewsFeed(apiUrl),
   });
+};
+
+export const useGetAllPostsInDashboard = (query?: string) => {
+  const { data, error, refetch, isLoading } = useQuery({
+    queryKey: query ? ["posts", query] : ["posts"],
+    queryFn: async () => await getAllPostsDashboard(query || ""),
+  });
+
+  return { data, error, refetch, isLoading };
 };
 
 export const useGetSinglePost = (id: string) => {
@@ -86,6 +95,26 @@ export const useRemoveDownvotePost = () => {
         loading: "Removing downvote post...",
         success: `You removed downvoting this post!`,
         error: "Error when downvoting post.",
+      });
+    },
+  });
+};
+
+export const useUpdatePost = () => {
+  return useMutation<any, Error, { postData: Partial<IPost>; id: string }>({
+    mutationKey: ["UPDATE_POST"],
+    mutationFn: async ({ postData, id }) => await updatePost(postData, id),
+  });
+};
+
+export const useDeletePost = () => {
+  return useMutation<any, Error, { id: string }>({
+    mutationKey: ["DELETE_POST"],
+    mutationFn: async ({ id }) => {
+      return toast.promise(deletePost(id), {
+        loading: "Deleting Post...",
+        success: "Post deleted successfully!",
+        error: "Error when deleting comment.",
       });
     },
   });
