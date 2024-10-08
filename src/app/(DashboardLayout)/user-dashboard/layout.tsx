@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
-import { User, BookOpenText, UserPlus } from "lucide-react";
+
 import Sidebar from "@/src/app/(DashboardLayout)/_components/Sidebar";
+import { MdOutlinePets } from "react-icons/md";
+import { RiUserFollowLine } from "react-icons/ri";
+import { FiUser } from "react-icons/fi";
+import { IoMdBook } from "react-icons/io";
 
 export const metadata: Metadata = {
   title: "User Dashboard",
@@ -17,37 +21,24 @@ export default function UserDashboardLayout({
     {
       label: "Posts",
       href: "/user-dashboard",
-      icon: <BookOpenText size={20} />,
+      icon: <IoMdBook className="size-5" />,
     },
     {
       label: "Followers",
       href: "/user-dashboard/followers",
-      icon: <User size={20} />,
+      icon: <FiUser className="size-5" />,
     },
     {
       label: "Following",
       href: "/user-dashboard/followings",
-      icon: <UserPlus size={20} />,
+      icon: <RiUserFollowLine className="size-5" />,
+    },
+    {
+      label: "Nutrition List",
+      href: "/user-dashboard/nutrition-list",
+      icon: <MdOutlinePets className="size-5" />,
     },
   ];
-
-  // const commonLinks = [
-  //   {
-  //     label: "NewsFeed",
-  //     href: "/",
-  //     icon: <MessageSquareQuote size={20} />,
-  //   },
-  //   {
-  //     label: "About",
-  //     href: "/about",
-  //     icon: <ContactRound size={20} />,
-  //   },
-  //   {
-  //     label: "Contact",
-  //     href: "/contact",
-  //     icon: <Contact size={20} />,
-  //   },
-  // ];
 
   return (
     <div className="flex min-h-screen">
