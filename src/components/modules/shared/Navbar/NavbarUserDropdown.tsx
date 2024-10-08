@@ -70,6 +70,7 @@ export default function NavbarUserDropdown({ user }: IProps) {
             onClick={() => handleLogout()}
             key="logout"
             color="danger"
+            className="text-error"
           >
             Log Out
           </DropdownItem>

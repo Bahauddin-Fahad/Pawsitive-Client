@@ -28,14 +28,16 @@ const UserProvider = ({ children }: { children: ReactNode }) => {
   // Fetch the current user and update state
   const handleUser = async () => {
     try {
-      const user = await getCurrentUser(); // Fetch user from your service
+      const user = await getCurrentUser();
+      console.log("from provider", user);
+
       setUser(user);
-      setIsLoading(false); // Set user state
+      setIsLoading(false);
     } catch (error) {
       console.error("Failed to fetch user:", error);
-      setUser(null); // Reset user if fetching fails
+      setUser(null);
     } finally {
-      setIsLoading(false); // Stop loading once done
+      setIsLoading(false);
     }
   };
 
@@ -44,9 +46,8 @@ const UserProvider = ({ children }: { children: ReactNode }) => {
     handleUser();
   }, [isLoading]);
 
-  // Update the user profile in context with new data
   const updateProfile = (updatedUserData: IUser) => {
-    setUser(updatedUserData); // Update the user state with new data passed from the component
+    setUser(updatedUserData);
   };
 
   return (

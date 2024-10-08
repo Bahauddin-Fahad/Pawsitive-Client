@@ -33,7 +33,7 @@ import UpdatePostModal from "@/src/components/modals/UpdatePostModal";
 import { DeletePostModal } from "@/src/components/modals/DeletePostModal";
 import { DeleteCommentModal } from "@/src/components/modals/DeleteCommentModal";
 import { RiEyeFill, RiUserAddLine, RiUserUnfollowLine } from "react-icons/ri";
-import { LuPencil } from "react-icons/lu";
+import { LuCrown, LuPencil } from "react-icons/lu";
 import { FaRegTrashAlt } from "react-icons/fa";
 import {
   MdOutlineThumbDown,
@@ -247,7 +247,7 @@ const PostCard = ({ singlePost, refetch }: ITravelPostCardProps) => {
                       e.preventDefault();
                       setOpenDeleteModal(true);
                     }}
-                    className="flex gap-2 items-center text-error"
+                    className="flex gap-2 items-center text-error hover:text-white"
                   >
                     <FaRegTrashAlt />
                     <span>Delete Post</span>
@@ -315,24 +315,10 @@ const PostCard = ({ singlePost, refetch }: ITravelPostCardProps) => {
           </div>
           <div className="mt-2 mb-6 md:mb-0 md:mt-0">
             <div className="rounded-full border border-primary px-3 py-2 text-white font-semibold hidden md:inline-flex justify-center mb-2 gap-1 min-w-16">
-              <div className="flex items-center">
+              <div className="flex items-center gap-2">
                 {planType === "PREMIUM" && (
                   <span>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="20"
-                      height="20"
-                      viewBox="0 0 24 24"
-                      fill="#fcc200"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="lucide lucide-crown"
-                    >
-                      <path d="M11.562 3.266a.5.5 0 0 1 .876 0L15.39 8.87a1 1 0 0 0 1.516.294L21.183 5.5a.5.5 0 0 1 .798.519l-2.834 10.246a1 1 0 0 1-.956.734H5.81a1 1 0 0 1-.957-.734L2.02 6.02a.5.5 0 0 1 .798-.519l4.276 3.664a1 1 0 0 0 1.516-.294z" />
-                      <path d="M5 21h14" />
-                    </svg>
+                    <LuCrown className="size-5 text-primary" />
                   </span>
                 )}
                 <span className="text-center">{category}</span>
