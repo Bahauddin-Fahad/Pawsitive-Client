@@ -68,7 +68,7 @@ export default function PFileInput({ name, label }: PFileInputProps) {
 
       {!fileName && errors[name] && (
         <p className="mt-1 text-sm text-red-600 text-center">
-          {errors[name].message as ReactNode}
+          {errors?.[name]?.message as ReactNode}
         </p>
       )}
     </div>

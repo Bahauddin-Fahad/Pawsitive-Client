@@ -23,7 +23,7 @@ export const getAllPostsNewsFeed = async (apiUrl: string) => {
   });
   const data = await res.json();
 
-  return data;
+  return data; // Return the full response
 };
 
 export const getAllPostsDashboard = async (query?: string) => {

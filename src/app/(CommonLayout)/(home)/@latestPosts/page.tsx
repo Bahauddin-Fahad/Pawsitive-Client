@@ -56,6 +56,14 @@ const NewsFeed = () => {
       page: page.toString(),
     }).toString()}`
   );
+  console.log(
+    `${envConfig.baseApi}/posts?${new URLSearchParams({
+      ...(debouncedSearchTerm && { searchTerm: debouncedSearchTerm }),
+      ...(category && { category }),
+      ...(sort && { sort }),
+      page: page.toString(),
+    }).toString()}`
+  );
 
   useEffect(() => {
     if (data?.result) {
@@ -114,8 +122,8 @@ const NewsFeed = () => {
                 variant="bordered"
                 onAction={handleCategorySelect}
               >
-                <DropdownItem key="Tips">Tips</DropdownItem>
-                <DropdownItem key="Stories">Stories</DropdownItem>
+                <DropdownItem key="Tip">Tip</DropdownItem>
+                <DropdownItem key="Story">Story</DropdownItem>
               </DropdownMenu>
             </Dropdown>
           </div>

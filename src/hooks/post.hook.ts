@@ -25,6 +25,11 @@ export const useCreatePost = () => {
 };
 
 export const useGetAllPosts = (apiUrl: string) => {
+  const hasSearchParams =
+    apiUrl.includes("searchTerm") ||
+    apiUrl.includes("category") ||
+    apiUrl.includes("sort");
+
   return useQuery(
     ["posts", apiUrl],
     async () => {
@@ -35,7 +40,7 @@ export const useGetAllPosts = (apiUrl: string) => {
       return response.data;
     },
     {
-      refetchInterval: 2000,
+      refetchInterval: hasSearchParams ? undefined : 2000,
     }
   );
 };

@@ -1,11 +1,11 @@
-import LoadingCardWithoutComment from "../../_components/LoadingCardWithoutComment";
+import LoadingCard from "../../_components/LoadingCard";
 import CreatePost from "../_components/CreatePost/CreatePost";
 
 const LatestPostLoading = () => {
   return (
     <div>
       <CreatePost />
-      <LoadingCardWithoutComment />
+      <LoadingCard />
     </div>
   );
 };
