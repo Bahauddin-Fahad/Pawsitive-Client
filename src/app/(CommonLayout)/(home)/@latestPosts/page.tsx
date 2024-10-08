@@ -14,16 +14,19 @@ import { Key, useEffect, useState } from "react";
 import { BiFilterAlt } from "react-icons/bi";
 import { ImCross } from "react-icons/im";
 import CreatePost from "../_components/CreatePost/CreatePost";
-import LoadingCardWithoutComment from "../../_components/LoadingCardWithoutComment";
-import PostCardWithoutComment from "../../_components/PostCardWithoutComment";
 import PostCard from "../../_components/PostCard";
+import LoadingCard from "../../_components/LoadingCard";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 const NewsFeed = () => {
   const [filterApplied, setFilterApplied] = useState(false);
   const [searchInput, setSearchInput] = useState("");
   const [category, setCategory] = useState("");
-  const [sort, setSort] = useState(""); // 'upvote' or 'downvote'
+  const [sort, setSort] = useState("");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
+  const [posts, setPosts] = useState<IPost[]>([]); // To store all fetched posts
+  const [hasMore, setHasMore] = useState(true);
+  const [page, setPage] = useState(1);
 
   // Debounce implementation using setTimeout for search
   useEffect(() => {
@@ -45,25 +48,42 @@ const NewsFeed = () => {
     }
   }, [searchInput, category, sort]);
 
-  const apiUrl = `${envConfig.baseApi}/posts?${new URLSearchParams({
-    ...(debouncedSearchTerm && { searchTerm: debouncedSearchTerm }),
-    ...(category && { category }),
-    ...(sort && { sort }),
-  }).toString()}`;
+  const { data } = useGetAllPosts(
+    `${envConfig.baseApi}/posts?${new URLSearchParams({
+      ...(debouncedSearchTerm && { searchTerm: debouncedSearchTerm }),
+      ...(category && { category }),
+      ...(sort && { sort }),
+      page: page.toString(),
+    }).toString()}`
+  );
 
-  const { data: filteredPosts } = useGetAllPosts(apiUrl);
+  useEffect(() => {
+    if (data?.result) {
+      console.log("API Response:", data);
+      if (page === 1) {
+        setPosts(data.result);
+      } else {
+        setPosts((prev) => [...prev, ...data.result]);
+      }
+      setHasMore(data.result.length > 0);
+    }
+  }, [data, page]);
 
   const handleCategorySelect = (key: Key) => {
     setCategory(String(key));
+    setPage(1);
+    setPosts([]);
   };
 
   const handleSortSelect = (key: Key) => {
     setSort(String(key));
+    setPage(1); // Reset page to 1 when sort changes
+    setPosts([]); // Clear posts when filter changes
   };
 
   return (
     <div>
-      <CreatePost />
+      <CreatePost refetch={() => setPage(1)} />
       <div className="">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 my-5 p-4 rounded-md shadow md:w-11/12 lg:w-10/12 xl:w-[75%] mx-auto">
           <input
@@ -171,6 +191,8 @@ const NewsFeed = () => {
                   setCategory("");
                   setSort("");
                   setFilterApplied(false);
+                  setPage(1);
+                  setPosts([]);
                 }}
               >
                 <span>
@@ -182,19 +204,33 @@ const NewsFeed = () => {
           </div>
         )}
       </div>
-
       <div className="my-10">
-        {filteredPosts?.data?.result ? (
-          <div>
-            {filteredPosts?.data?.result?.map(
-              (singlePost: IPost, index: number) => (
+        <InfiniteScroll
+          dataLength={posts.length}
+          next={() => setPage((prev) => prev + 1)}
+          hasMore={hasMore}
+          loader={<LoadingCard />}
+          endMessage={
+            !hasMore && (
+              <p
+                className="text-2xl font-bold capitalize"
+                style={{ textAlign: "center" }}
+              >
+                <b>No more posts to load</b>
+              </p>
+            )
+          }
+        >
+          {posts.length > 0 ? (
+            <div>
+              {posts.map((singlePost: IPost, index: number) => (
                 <PostCard key={index} singlePost={singlePost} />
-              )
-            )}
-          </div>
-        ) : (
-          <LoadingCardWithoutComment />
-        )}
+              ))}
+            </div>
+          ) : (
+            !hasMore && <p className="text-center">No posts available</p>
+          )}
+        </InfiniteScroll>
       </div>
     </div>
   );

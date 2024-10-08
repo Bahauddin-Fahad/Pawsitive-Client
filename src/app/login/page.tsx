@@ -160,11 +160,20 @@ const LoginPage = () => {
               value={"Login"}
             />
           </form>
-          <div className="flex gap-2 justify-center text-sm lg:text-lg">
-            <p>{"Don't have an account?"}</p>
-            <Link className="text-[#2E603C] font-semibold" href="/signup">
-              {"Sign up"}
+          <div className="flex md:flex-col items-center md:items-start justify-between">
+            <Link href={"/forget-password"}>
+              <button type="reset" className="w-max">
+                <span className="text-sm lg:text-lg tracking-wide">
+                  Forgot password?
+                </span>
+              </button>
             </Link>
+            <div className="flex gap-2 justify-center text-sm lg:text-lg">
+              <p>{"Don't have an account?"}</p>
+              <Link className="text-[#2E603C] font-semibold" href="/signup">
+                {"Sign up"}
+              </Link>
+            </div>
           </div>
         </div>
       </div>

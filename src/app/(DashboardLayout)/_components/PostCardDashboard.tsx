@@ -11,10 +11,8 @@ import {
   DropdownTrigger,
 } from "@nextui-org/dropdown";
 import { Image } from "@nextui-org/image";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { FaRegTrashAlt } from "react-icons/fa";
-import { RiEyeFill } from "react-icons/ri";
 
 interface IPostCardProps {
   singlePost: any;
@@ -24,15 +22,10 @@ interface IPostCardProps {
 const PostCardDashboard = ({ singlePost, refetch }: IPostCardProps) => {
   const { _id, title, image, postAuthor, createdAt } = singlePost;
 
-  const router = useRouter();
   const params = new URLSearchParams();
   params.set("id", _id);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const { mutate: handlePostDelete } = useDeletePost();
-
-  const handleNavigation = (pathname: string) => {
-    router.push(pathname);
-  };
 
   const handleDeletePost = async () => {
     handlePostDelete({ id: _id });
@@ -84,17 +77,6 @@ const PostCardDashboard = ({ singlePost, refetch }: IPostCardProps) => {
                   </svg>
                 </DropdownTrigger>
                 <DropdownMenu aria-label="Static Actions">
-                  <DropdownItem
-                    key="view"
-                    onClick={() =>
-                      handleNavigation(`/postDetails?${params.toString()}`)
-                    }
-                  >
-                    <span className="flex gap-2 items-center text-primary">
-                      <RiEyeFill />
-                      <span>View Post</span>
-                    </span>
-                  </DropdownItem>
                   <DropdownItem
                     key="delete"
                     className="text-danger"

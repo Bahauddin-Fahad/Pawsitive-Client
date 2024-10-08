@@ -8,8 +8,6 @@ export const startPremium = async (payload: any) => {
       payload
     );
 
-    console.log(data);
-
     return data;
   } catch (error: any) {
     console.error(error);

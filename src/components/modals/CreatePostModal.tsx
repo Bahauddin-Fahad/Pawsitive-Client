@@ -22,7 +22,7 @@ export const postCategory = [
   { key: "Story", label: "Story" },
 ];
 
-export default function CreatePostModal() {
+export default function CreatePostModal({ refetch }: { refetch: any }) {
   const [openModal, setOpenModal] = useState(false);
   const [openAuthModal, setOpenAuthModal] = useState(false);
   const [content, setContent] = useState("");
@@ -93,13 +93,13 @@ export default function CreatePostModal() {
         image: imageURL,
         planType: isSelected ? "PREMIUM" : "BASIC",
       };
-      console.log(postData);
 
       toast.dismiss();
 
       handlePostCreation(postData);
       toast.success("Post created successfully!");
       setOpenModal(false);
+      refetch();
       reset();
     } catch (error: any) {
       console.error(error.message);

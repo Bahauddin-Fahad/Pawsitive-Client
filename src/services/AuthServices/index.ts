@@ -1,4 +1,5 @@
 "use server";
+import envConfig from "@/src/config/envConfig";
 import axiosInstance from "@/src/lib/AxiosInstance";
 import nexiosInstance from "@/src/lib/NexiosInstance";
 import { ISignup } from "@/src/types";
@@ -24,7 +25,6 @@ export const loginUser = async (userData: FieldValues) => {
 export const signupUser = async (userData: ISignup) => {
   try {
     const response: any = await axiosInstance.post("/auth/signup", userData);
-    console.log("r", response);
 
     if (response.data.success) {
       cookies().set("accessToken", response.data?.data?.accessToken);
@@ -66,8 +66,64 @@ export const getCurrentUser = async () => {
       premiumStart: decodedToken.premiumStart,
       premiumEnd: decodedToken.premiumEnd,
       premiumCharge: decodedToken.premiumCharge,
+      isDeleted: decodedToken.isDeleted,
     };
   }
 
   return decodedToken;
+};
+export const forgetPassword = async (userEmail: { email: string }) => {
+  try {
+    const response = await fetch(`${envConfig.baseApi}/auth/forget-password`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(userEmail),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Failed to send reset link");
+    }
+
+    const result = await response.json();
+
+    return result;
+  } catch (error: any) {
+    console.error("Error in forget Password:", error);
+    throw error;
+  }
+};
+
+export const resetPassword = async (
+  userData: {
+    email: string;
+    newPassword: string;
+  },
+  token: string
+) => {
+  try {
+    const response = await fetch(`${envConfig.baseApi}/auth/reset-password`, {
+      method: "POST",
+      headers: {
+        Authorization: `${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(userData),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error("Error response:", errorData);
+      throw new Error(errorData.message || "Failed to reset password");
+    }
+
+    const result = await response.json();
+
+    return result;
+  } catch (error: any) {
+    console.error("Error in resetPassword:", error);
+    throw error;
+  }
 };

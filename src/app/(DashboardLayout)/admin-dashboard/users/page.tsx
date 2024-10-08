@@ -89,8 +89,7 @@ const UsersManagement = () => {
     { name: "PLANTYPE", uid: "planType" },
     { name: "ACTIONS", uid: "actions" },
   ];
-  console.log(user);
-  console.log(users);
+ 
 
   const renderCell = useCallback((singleUser: IUser, columnKey: React.Key) => {
     const cellValue = singleUser[columnKey as keyof IUser];

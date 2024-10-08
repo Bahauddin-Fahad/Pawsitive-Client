@@ -28,11 +28,11 @@ import {
   DropdownMenu,
   DropdownTrigger,
 } from "@nextui-org/dropdown";
-import { useRouter } from "next/navigation";
+
 import UpdatePostModal from "@/src/components/modals/UpdatePostModal";
 import { DeletePostModal } from "@/src/components/modals/DeletePostModal";
 import { DeleteCommentModal } from "@/src/components/modals/DeleteCommentModal";
-import { RiEyeFill, RiUserAddLine, RiUserUnfollowLine } from "react-icons/ri";
+import { RiUserAddLine, RiUserUnfollowLine } from "react-icons/ri";
 import { LuCrown, LuPencil } from "react-icons/lu";
 import { FaRegTrashAlt } from "react-icons/fa";
 import {
@@ -43,6 +43,7 @@ import {
   MdOutlineMessage,
 } from "react-icons/md";
 import { IoSend } from "react-icons/io5";
+import BlurOverlay from "./BlurOverlay";
 
 interface IPostCardProps {
   singlePost: any;
@@ -74,7 +75,6 @@ const PostCard = ({ singlePost, refetch }: IPostCardProps) => {
   const { mutate: handleRemoveUpvotePost } = useRemoveUpvotePost();
   const { mutate: handleAddDownvotePost } = useAddDownvotePost();
   const { mutate: handleRemoveDownvotePost } = useRemoveDownvotePost();
-
   const { mutate: handlePostDelete } = useDeletePost();
   const { data: allComments } = useGetPostAllComments(_id);
 
@@ -88,8 +88,9 @@ const PostCard = ({ singlePost, refetch }: IPostCardProps) => {
   const [openModal, setOpenModal] = useState(false);
   const [openEditModal, setOpenEditModal] = useState(false);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
+  const isUserNotAvailableOrBasic =
+    !user || (planType === "PREMIUM" && user.planType === "BASIC");
 
-  const router = useRouter();
   const params = new URLSearchParams();
   params.set("id", _id);
 
@@ -135,10 +136,6 @@ const PostCard = ({ singlePost, refetch }: IPostCardProps) => {
     } catch (error: any) {
       console.log(error.message);
     }
-  };
-
-  const handleNavigation = (pathname: string) => {
-    router.push(pathname);
   };
 
   const handleUpdateComment = (commentId: string) => {
@@ -192,7 +189,7 @@ const PostCard = ({ singlePost, refetch }: IPostCardProps) => {
   };
 
   return (
-    <div className="my-5">
+    <div className="my-5 relative">
       <article className="relative mb-4 break-inside p-4 md:p-6 rounded-xl bg-custom flex flex-col bg-clip-border md:w-11/12 lg:w-10/12 xl:w-[75%] mx-auto border border-secondary">
         {postAuthor._id === user?._id && (
           <div className="mb-5 cursor-pointer w-20">
@@ -214,22 +211,9 @@ const PostCard = ({ singlePost, refetch }: IPostCardProps) => {
                   <circle cx="19" cy="12" r="1" />
                   <circle cx="5" cy="12" r="1" />
                 </svg>
-                {/* <HiDotsHorizontal /> */}
               </DropdownTrigger>
               <DropdownMenu aria-label="Static Actions">
-                <DropdownItem
-                  key="view"
-                  // onClick={() =>
-                  //   handleNavigation(`/postDetails?${params.toString()}`)
-                  // }
-                >
-                  <span className="flex gap-2 items-center text-primary">
-                    <RiEyeFill />
-                    <span>View Post</span>
-                  </span>
-                </DropdownItem>
                 <DropdownItem key="edit">
-                  {" "}
                   <span
                     onClick={(e) => {
                       e.preventDefault();
@@ -283,34 +267,38 @@ const PostCard = ({ singlePost, refetch }: IPostCardProps) => {
                 })}
               </div>
             </div>
-            {postAuthor?._id !== user?._id && (
-              <div className="ml-3 md:ml-4">
-                {postAuthor?.followers?.includes(user?._id) ? (
-                  <span
-                    onClick={() =>
-                      handleRemoveFollow(postAuthor?._id, postAuthor?.name)
-                    }
-                    className="rounded-full bg-secondary px-3 py-1 text-black text-sm font-semibold flex gap-2 items-center cursor-pointer hover:bg-secondary"
-                  >
-                    <span>
-                      <RiUserUnfollowLine />
-                    </span>
-                    <span className="md:block">Unfollow</span>
-                  </span>
-                ) : (
-                  <span
-                    onClick={() =>
-                      handleAddFollow(postAuthor?._id, postAuthor?.name)
-                    }
-                    className="rounded-full bg-primary px-3 py-1 text-black text-sm font-semibold flex gap-2 items-center cursor-pointer hover:bg-secondary"
-                  >
-                    <span>
-                      <RiUserAddLine />
-                    </span>
-                    <span className="md:block">Follow</span>
-                  </span>
+            {user && (
+              <>
+                {postAuthor?._id !== user?._id && (
+                  <div className="ml-3 md:ml-4">
+                    {postAuthor?.followers?.includes(user?._id) ? (
+                      <span
+                        onClick={() =>
+                          handleRemoveFollow(postAuthor?._id, postAuthor?.name)
+                        }
+                        className="rounded-full bg-secondary px-3 py-1 text-black text-sm font-semibold flex gap-2 items-center cursor-pointer hover:bg-secondary"
+                      >
+                        <span>
+                          <RiUserUnfollowLine />
+                        </span>
+                        <span className="md:block">Unfollow</span>
+                      </span>
+                    ) : (
+                      <span
+                        onClick={() =>
+                          handleAddFollow(postAuthor?._id, postAuthor?.name)
+                        }
+                        className="rounded-full bg-primary px-3 py-1 text-black text-sm font-semibold flex gap-2 items-center cursor-pointer hover:bg-secondary"
+                      >
+                        <span>
+                          <RiUserAddLine />
+                        </span>
+                        <span className="md:block">Follow</span>
+                      </span>
+                    )}
+                  </div>
                 )}
-              </div>
+              </>
             )}
           </div>
           <div className="mt-2 mb-6 md:mb-0 md:mt-0">
@@ -326,213 +314,213 @@ const PostCard = ({ singlePost, refetch }: IPostCardProps) => {
             </div>
           </div>
         </div>
-
         {/* category part for small device */}
         <div className="mt-2 mb-6 md:mb-0 md:mt-0">
           <span className="rounded-full border border-primary px-3 py-2 text-primary font-semibold md:hidden mb-2">
             {category}
           </span>
         </div>
-
         {/* title part */}
-        <h2 className="text-xl md:text-3xl font-extrabold">{title}</h2>
+        <h2 className="text-xl md:text-3xl font-extrabold mb-3">{title}</h2>
 
-        {/* image part */}
-        <div className="py-4">
-          <div className="flex justify-between gap-1">
-            <a className="flex w-full">
-              <div className="overflow-hidden rounded-br-lg w-full h-[450px]">
-                <img
-                  className="object-cover w-full h-full transition-transform duration-300 hover:scale-105 rounded-md"
-                  src={image}
-                  alt="Description"
-                />
-              </div>
-            </a>
-          </div>
-        </div>
+        {/* {user?.planType ==="BASIC"&& singlePost?.planType==="PREMIUM"?<></>:<></>} */}
 
-        {/* description */}
-        <div className="">{parse(description)}</div>
-
-        {/* upvote,downvote & comment count */}
-        <div className="py-4 flex gap-5">
-          <div className="inline-flex items-center">
-            {upvote?.includes(user?._id) ? (
-              <span
-                onClick={() => handleRemoveUpvote(_id as string)}
-                className="mr-2 cursor-pointer"
-              >
-                <MdThumbUp className="size-6 text-primary" />
-              </span>
-            ) : (
-              <span
-                onClick={() => handleAddUpvote(_id as string)}
-                className="mr-2 cursor-pointer"
-              >
-                <MdOutlineThumbUp className="size-6 text-primary" />
-              </span>
-            )}
-            <span className="text-lg font-bold">{upvote?.length || 0}</span>
-          </div>
-          <div className="inline-flex items-center">
-            {downvote?.includes(user?._id) ? (
-              <span
-                onClick={() => handleRemoveDownvote(_id)}
-                className="mr-2 cursor-pointer"
-              >
-                <MdThumbDown className="size-6 text-primary" />
-              </span>
-            ) : (
-              <span
-                onClick={() => handleAddDownvote(_id)}
-                className="mr-2 cursor-pointer"
-              >
-                <MdOutlineThumbDown className="size-6 text-primary" />
-              </span>
-            )}
-            <span className="text-lg font-bold">{downvote?.length || 0}</span>
-          </div>
-          <div className="inline-flex items-center">
-            <span className="mr-2">
-              <MdOutlineMessage className="size-6 text-primary" />
-            </span>
-            <span className="text-lg font-bold">
-              {allComments?.data?.result?.length || 0}
-            </span>
-          </div>
-        </div>
-
-        {/* Write comment part */}
         <div className="relative">
-          <Input
-            type="text"
-            placeholder="Write a comment"
-            variant="bordered"
-            size="lg"
-            className="border-primary focus:ring-primary"
-            value={comment}
-            onChange={handleInputChange}
-            endContent={
-              <IoSend
-                onClick={handleCommentSubmit}
-                className="text-primary size-6 cursor-pointer"
-              />
-            }
-          />
-        </div>
-
-        {/* Comment Section */}
-        <div>
-          {allComments?.data?.result?.length > 0 && (
-            <div className="pt-6">
-              {allComments.data.result.map((comment: any) => {
-                return (
-                  <div key={comment._id} className="pb-4">
-                    <div className="flex ">
-                      <a className="mr-4">
-                        <img
-                          className="rounded-full max-w-none w-12 h-12 object-cover"
-                          src={comment.user?.profilePhoto}
-                          alt={comment.user?.name}
-                        />
-                      </a>
-                      <div className="flex flex-col w-full">
-                        <div className="w-full">
-                          {/* increase the width of this div */}
+          {/* image part */}
+          <div className="py-4">
+            <div className="flex justify-between gap-1">
+              <a className="flex w-full">
+                <div className="overflow-hidden rounded-br-lg w-full h-[450px]">
+                  <img
+                    className="object-cover w-full h-full transition-transform duration-300 hover:scale-105 rounded-md"
+                    src={image}
+                    alt="Description"
+                  />
+                </div>
+              </a>
+            </div>
+          </div>
+          {/* description */}
+          <div className="">{parse(description)}</div>
+          {/* upvote,downvote & comment count */}
+          <div className="py-4 flex gap-5">
+            <div className="inline-flex items-center">
+              {upvote?.includes(user?._id) ? (
+                <span
+                  onClick={() => handleRemoveUpvote(_id as string)}
+                  className="mr-2 cursor-pointer"
+                >
+                  <MdThumbUp className="size-6 text-primary" />
+                </span>
+              ) : (
+                <span
+                  onClick={() => handleAddUpvote(_id as string)}
+                  className="mr-2 cursor-pointer"
+                >
+                  <MdOutlineThumbUp className="size-6 text-primary" />
+                </span>
+              )}
+              <span className="text-lg font-bold">{upvote?.length || 0}</span>
+            </div>
+            <div className="inline-flex items-center">
+              {downvote?.includes(user?._id) ? (
+                <span
+                  onClick={() => handleRemoveDownvote(_id)}
+                  className="mr-2 cursor-pointer"
+                >
+                  <MdThumbDown className="size-6 text-primary" />
+                </span>
+              ) : (
+                <span
+                  onClick={() => handleAddDownvote(_id)}
+                  className="mr-2 cursor-pointer"
+                >
+                  <MdOutlineThumbDown className="size-6 text-primary" />
+                </span>
+              )}
+              <span className="text-lg font-bold">{downvote?.length || 0}</span>
+            </div>
+            <div className="inline-flex items-center">
+              <span className="mr-2">
+                <MdOutlineMessage className="size-6 text-primary" />
+              </span>
+              <span className="text-lg font-bold">
+                {allComments?.data?.result?.length || 0}
+              </span>
+            </div>
+          </div>
+          {/* Write comment part */}
+          <div className="relative">
+            <Input
+              type="text"
+              placeholder="Write a comment"
+              variant="bordered"
+              size="lg"
+              className="border-primary focus:ring-primary"
+              value={comment}
+              onChange={handleInputChange}
+              endContent={
+                <IoSend
+                  onClick={handleCommentSubmit}
+                  className="text-primary size-6 cursor-pointer"
+                />
+              }
+            />
+          </div>
+          {/* Comment Section */}
+          <div>
+            {allComments?.data?.result?.length > 0 && (
+              <div className="pt-6">
+                {allComments.data.result.map((comment: any) => {
+                  return (
+                    <div key={comment._id} className="pb-4">
+                      <div className="flex ">
+                        <a className="mr-4">
+                          <img
+                            className="rounded-full max-w-none w-12 h-12 object-cover"
+                            src={comment.user?.profilePhoto}
+                            alt={comment.user?.name}
+                          />
+                        </a>
+                        <div className="flex flex-col w-full">
                           <div className="w-full">
-                            <a className="inline-block font-bold mr-2">
-                              {comment.user?.name}
-                            </a>
-                            <span className="text-xs md:text-sm text-secondary">
-                              {new Date(comment.createdAt).toLocaleString(
-                                "en-US",
-                                {
-                                  year: "numeric",
-                                  month: "long",
-                                  day: "numeric",
-                                  hour: "numeric",
-                                  minute: "numeric",
-                                  hour12: true,
-                                }
+                            {/* increase the width of this div */}
+                            <div className="w-full">
+                              <a className="inline-block font-bold mr-2">
+                                {comment.user?.name}
+                              </a>
+                              <span className="text-xs md:text-sm text-secondary">
+                                {new Date(comment.createdAt).toLocaleString(
+                                  "en-US",
+                                  {
+                                    year: "numeric",
+                                    month: "long",
+                                    day: "numeric",
+                                    hour: "numeric",
+                                    minute: "numeric",
+                                    hour12: true,
+                                  }
+                                )}
+                              </span>
+                            </div>
+                            <div>
+                              {comment?.user?._id === user?._id &&
+                              comment._id === isEditing ? (
+                                <div className="flex gap-3">
+                                  <div className="relative w-full">
+                                    <Input
+                                      type="text"
+                                      placeholder="Write a comment"
+                                      variant="bordered"
+                                      size="md"
+                                      className="border-primary focus:ring-primary"
+                                      value={
+                                        editedComments[comment._id] !==
+                                        undefined
+                                          ? editedComments[comment._id]
+                                          : comment.text
+                                      }
+                                      onChange={(e) =>
+                                        handleEditCommentChange(comment._id, e)
+                                      }
+                                      endContent={
+                                        <IoSend
+                                          onClick={() =>
+                                            handleUpdateComment(comment._id)
+                                          }
+                                          className="text-primary size-6 cursor-pointer"
+                                        />
+                                      }
+                                    />
+                                  </div>
+                                  <button
+                                    onClick={handleCancel}
+                                    className="rounded-md border border-red-600 py-[3px] px-2 text-red-600 duration-150 hover:bg-red-600 hover:text-white"
+                                  >
+                                    Cancel
+                                  </button>
+                                </div>
+                              ) : (
+                                <p>{comment.text}</p>
                               )}
-                            </span>
+                            </div>
                           </div>
                           <div>
-                            {comment?.user?._id === user?._id &&
-                            comment._id === isEditing ? (
-                              <div className="flex gap-3">
-                                <div className="relative w-full">
-                                  <Input
-                                    type="text"
-                                    placeholder="Write a comment"
-                                    variant="bordered"
-                                    size="md"
-                                    className="border-primary focus:ring-primary"
-                                    value={
-                                      editedComments[comment._id] !== undefined
-                                        ? editedComments[comment._id]
-                                        : comment.text
-                                    }
-                                    onChange={(e) =>
-                                      handleEditCommentChange(comment._id, e)
-                                    }
-                                    endContent={
-                                      <IoSend
-                                        onClick={() =>
-                                          handleUpdateComment(comment._id)
-                                        }
-                                        className="text-primary size-6 cursor-pointer"
-                                      />
-                                    }
-                                  />
-                                </div>
-                                <button
-                                  onClick={handleCancel}
-                                  className="rounded-md border border-red-600 py-[3px] px-2 text-red-600 duration-150 hover:bg-red-600 hover:text-white"
-                                >
-                                  Cancel
-                                </button>
-                              </div>
-                            ) : (
-                              <p>{comment.text}</p>
+                            {comment?.user?._id === user?._id && (
+                              <>
+                                {!isEditing && (
+                                  <div className="hidden md:flex gap-3 mr-2">
+                                    <p
+                                      onClick={() =>
+                                        handleEdit(comment._id, comment.text)
+                                      }
+                                      className="text-sm text-secondary hover:underline cursor-pointer"
+                                    >
+                                      Edit
+                                    </p>
+                                    <p
+                                      onClick={() => {
+                                        setCommentIdToDelete(comment._id);
+                                        setOpenModal(true);
+                                      }}
+                                      className="text-sm text-secondary hover:underline cursor-pointer"
+                                    >
+                                      Delete
+                                    </p>
+                                  </div>
+                                )}
+                              </>
                             )}
                           </div>
                         </div>
-                        <div>
-                          {comment?.user?._id === user?._id && (
-                            <>
-                              {!isEditing && (
-                                <div className="hidden md:flex gap-3 mr-2">
-                                  <p
-                                    onClick={() =>
-                                      handleEdit(comment._id, comment.text)
-                                    }
-                                    className="text-sm text-secondary hover:underline cursor-pointer"
-                                  >
-                                    Edit
-                                  </p>
-                                  <p
-                                    onClick={() => {
-                                      setCommentIdToDelete(comment._id);
-                                      setOpenModal(true);
-                                    }}
-                                    className="text-sm text-secondary hover:underline cursor-pointer"
-                                  >
-                                    Delete
-                                  </p>
-                                </div>
-                              )}
-                            </>
-                          )}
-                        </div>
                       </div>
                     </div>
-                  </div>
-                );
-              })}
-            </div>
-          )}
+                  );
+                })}
+              </div>
+            )}
+          </div>
+          {isUserNotAvailableOrBasic && <BlurOverlay />}
         </div>
       </article>
 

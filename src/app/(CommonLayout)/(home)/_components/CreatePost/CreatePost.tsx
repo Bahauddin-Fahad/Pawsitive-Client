@@ -1,10 +1,10 @@
 import CreatePostModal from "@/src/components/modals/CreatePostModal";
 
-const CreatePost = () => {
+const CreatePost = ({ refetch }: { refetch: any }) => {
   return (
     <div>
       <div className="my-7">
-        <CreatePostModal />
+        <CreatePostModal refetch={refetch} />
       </div>
     </div>
   );
