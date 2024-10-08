@@ -1,18 +1,11 @@
 import type { Metadata } from "next";
-import {
-  User,
-  MessageSquareQuote,
-  Contact,
-  ContactRound,
-  BookOpenText,
-  UserPlus,
-} from "lucide-react";
+import { User, BookOpenText, UserPlus } from "lucide-react";
 import Sidebar from "@/src/app/(DashboardLayout)/_components/Sidebar";
 
 export const metadata: Metadata = {
   title: "User Dashboard",
   description:
-    "Discover, share, and explore travel stories, tips, and guides from a community of travel enthusiasts. Plan your next adventure with expert advice and unique insights into destinations around the world.",
+    "Explore heartwarming stories, expert tips, and helpful guides for caring for your pets. Discover a community of pet lovers sharing their experiences, advice, and unique insights into keeping your furry friends happy and healthy.",
 };
 
 export default function UserDashboardLayout({

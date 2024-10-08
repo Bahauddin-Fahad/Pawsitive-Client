@@ -29,7 +29,6 @@ const UserProvider = ({ children }: { children: ReactNode }) => {
   const handleUser = async () => {
     try {
       const user = await getCurrentUser();
-      console.log("from provider", user);
 
       setUser(user);
       setIsLoading(false);

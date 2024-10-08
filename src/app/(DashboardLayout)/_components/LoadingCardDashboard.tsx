@@ -1,5 +1,3 @@
-"use client";
-
 const LoadingCardDashboard = () => {
   return (
     <div className="py-4 relative bg-custom shadow-lg rounded-lg w-full max-w-md mx-auto">

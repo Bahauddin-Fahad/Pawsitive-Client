@@ -32,6 +32,7 @@ export interface IUser {
   premiumCharge?: number;
   createdAt?: string;
   updatedAt?: string;
+  isDeleted: boolean;
 }
 
 export interface IPost {

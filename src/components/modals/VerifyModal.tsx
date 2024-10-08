@@ -110,7 +110,7 @@ const VerifyModal = ({ user, openModal, setOpenModal }: any) => {
                         </li>
                         <li className="space-x-2 flex items-center">
                           <HiOutlineBadgeCheck className="size-6 text-primary" />
-                          <span>Access Premium Travel Tips</span>
+                          <span>Access Premium Pet Tips</span>
                         </li>
                       </ul>
                     </div>
@@ -145,7 +145,7 @@ const VerifyModal = ({ user, openModal, setOpenModal }: any) => {
                         </div>
                         <li className="space-x-2 flex items-center">
                           <HiOutlineBadgeCheck className="size-6 text-primary" />
-                          <span>Follow Travelers</span>
+                          <span>Follow Pet Lovers</span>
                         </li>
                         <li className="space-x-2 flex items-center">
                           <HiOutlineBadgeCheck className="size-6 text-primary" />

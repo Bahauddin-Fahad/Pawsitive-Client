@@ -44,12 +44,12 @@ import {
 } from "react-icons/md";
 import { IoSend } from "react-icons/io5";
 
-interface ITravelPostCardProps {
+interface IPostCardProps {
   singlePost: any;
   refetch?: () => void;
 }
 
-const PostCard = ({ singlePost, refetch }: ITravelPostCardProps) => {
+const PostCard = ({ singlePost, refetch }: IPostCardProps) => {
   const {
     title,
     category,

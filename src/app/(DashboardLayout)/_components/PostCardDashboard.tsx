@@ -16,12 +16,12 @@ import { useState } from "react";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { RiEyeFill } from "react-icons/ri";
 
-interface ITravelPostCardProps {
+interface IPostCardProps {
   singlePost: any;
   refetch: any;
 }
 
-const PostCardDashboard = ({ singlePost, refetch }: ITravelPostCardProps) => {
+const PostCardDashboard = ({ singlePost, refetch }: IPostCardProps) => {
   const { _id, title, image, postAuthor, createdAt } = singlePost;
 
   const router = useRouter();

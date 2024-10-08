@@ -1,6 +1,7 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import {
+  deleteUser,
   followUser,
   getAllUsers,
   unFollowUser,
@@ -97,6 +98,7 @@ export const useUpdateUser = () => {
           premiumStart: userData.premiumStart || user.premiumStart,
           premiumEnd: userData.premiumEnd || user.premiumEnd,
           premiumCharge: userData.premiumCharge || user.premiumCharge || 0,
+          isDeleted: userData.isDeleted || user.isDeleted,
         };
 
         updateProfile(updatedUser);
@@ -111,5 +113,11 @@ export const useUpdateRole = () => {
   return useMutation<any, Error, { userData: Partial<IUser>; id: string }>({
     mutationKey: ["UPDATE_USER"],
     mutationFn: async ({ userData, id }) => await updateUser(userData, id),
+  });
+};
+export const useDeleteUser = () => {
+  return useMutation<any, Error, { id: string }>({
+    mutationKey: ["DELETE_USER"],
+    mutationFn: async ({ id }) => await deleteUser(id),
   });
 };

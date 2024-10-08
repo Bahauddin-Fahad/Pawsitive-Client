@@ -11,11 +11,16 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useUser } from "@/src/context/user.provider";
 import { useUserLogin } from "@/src/hooks/auth.hook";
 import { RiEyeFill, RiEyeCloseFill } from "react-icons/ri";
+import toast from "react-hot-toast";
 
 export type TLogin = {
   email: string;
   password: string;
 };
+interface SignInResponse {
+  success: boolean;
+  message?: string;
+}
 
 const LoginPage = () => {
   const [seePassowrd, setSeePassword] = useState(false);
@@ -23,8 +28,9 @@ const LoginPage = () => {
   const redirect = searchParams.get("redirect");
   const router = useRouter();
   const { setIsLoading: userLoading } = useUser();
-  const { mutate: handleUserLogin, isLoading, isSuccess } = useUserLogin();
-
+  const [signInResponse, setSignInResponse] = useState<
+    SignInResponse | undefined
+  >(undefined);
   const {
     register,
     formState: { errors },
@@ -32,21 +38,45 @@ const LoginPage = () => {
   } = useForm<FieldValues>({
     defaultValues: {},
   });
+  const handleSuccess = (data: any) => {
+    toast.dismiss();
+    setSignInResponse(data);
+
+    if (data.success) {
+      toast.success("Logged in successfully!");
+    } else {
+      toast.error(data.message || "Login failed");
+    }
+  };
+
+  const {
+    mutate: handleUserLogin,
+    isLoading,
+    isSuccess,
+  } = useUserLogin(handleSuccess);
 
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
-    handleUserLogin(data);
-    userLoading(true);
+    toast.loading("Loading...");
+    try {
+      handleUserLogin(data);
+      userLoading(true);
+    } catch (error: any) {
+      toast.dismiss();
+      toast.error(error.message);
+    }
   };
 
   useEffect(() => {
-    if (!isLoading && isSuccess) {
-      if (redirect) {
-        router.push(redirect);
-      } else {
-        router.push("/");
+    if (signInResponse?.success) {
+      if (!isLoading && isSuccess) {
+        if (redirect) {
+          router.push(redirect);
+        } else {
+          router.push("/");
+        }
       }
     }
-  }, [isLoading, isSuccess]);
+  }, [isLoading, isSuccess, signInResponse]);
 
   return (
     <div className="grid grid-cols-1 xs:grid-cols-2 bg-white h-screen">
