@@ -4,7 +4,6 @@ import { ProfileEditModal } from "@/src/components/modals/ProfileEditModal";
 import VerifyModal from "@/src/components/modals/VerifyModal";
 import { IUser } from "@/src/types";
 import { useState } from "react";
-import { LuBadgeCheck } from "react-icons/lu";
 import { HiOutlineCheckBadge } from "react-icons/hi2";
 export default function ProfileCard({ user }: { user: IUser }) {
   const {

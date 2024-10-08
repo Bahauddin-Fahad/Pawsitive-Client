@@ -10,8 +10,6 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useUser } from "@/src/context/user.provider";
 import { useUserSignup } from "@/src/hooks/auth.hook";
 import { useEffect, useState } from "react";
-import envConfig from "@/src/config/envConfig";
-import axios from "axios";
 import toast from "react-hot-toast";
 import { RiEyeFill, RiEyeCloseFill } from "react-icons/ri";
 
